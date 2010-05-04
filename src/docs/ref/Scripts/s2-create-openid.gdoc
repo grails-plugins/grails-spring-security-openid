@@ -1,0 +1,18 @@
+h1. s2-create-openid
+
+h2. Purpose
+
+Creates a domain class to manage OpenID urls associated with a user. The general format is:
+
+bc.
+   grails grails s2-create-openid <domain-class-name>
+
+h2. Example
+
+bc.
+grails grails s2-create-openid com.yourapp.OpenID
+
+h2. Description
+
+Creates an OpenID class with a many-to-one relationship to your application user. It has two properties, @url@ which is the OpenID value, and @user@, which is the user that it's associated with.
+
