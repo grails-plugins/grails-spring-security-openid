@@ -96,7 +96,7 @@ td.openid-submit {
 				<table class="openid-loginbox-userpass">
 					<tr>
 						<td>OpenID:</td>
-						<td><input type="text" name="openid_identifier" class="openid-identifier"/></td>
+						<td><input type="text" name="${openidIdentifier}" class="openid-identifier"/></td>
 					</tr>
 					<g:if test='${persistentRememberMe}'>
 					<tr>
