@@ -30,7 +30,7 @@ import org.springframework.security.openid.OpenIDAuthenticationFilter
 class SpringSecurityOpenidGrailsPlugin {
 
 	String version = '0.1'
-	String grailsVersion = '1.2 > *'
+	String grailsVersion = '1.2.2 > *'
 	Map dependsOn = ['springSecurityCore': '0.2 > *']
 	List pluginExcludes = [
 		'grails-app/domain/**',
@@ -57,6 +57,7 @@ class SpringSecurityOpenidGrailsPlugin {
 		SpringSecurityUtils.registerProvider 'openIDAuthProvider'
 		SpringSecurityUtils.registerFilter 'openIDAuthenticationFilter', SecurityFilterPosition.OPENID_FILTER
 
+		// have to get again after overlaying DefaultOpenIdSecurityConfig
 		conf = SpringSecurityUtils.securityConfig
 
 		openIDAuthProvider(OpenIDAuthenticationProvider) {
