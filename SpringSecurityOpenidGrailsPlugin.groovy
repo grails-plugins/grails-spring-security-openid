@@ -29,7 +29,7 @@ import org.springframework.security.openid.OpenIDAuthenticationFilter
 
 class SpringSecurityOpenidGrailsPlugin {
 
-	String version = '0.1'
+	String version = '0.1.1'
 	String grailsVersion = '1.2.2 > *'
 	Map dependsOn = ['springSecurityCore': '0.2 > *']
 	List pluginExcludes = [
