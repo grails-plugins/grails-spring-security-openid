@@ -1,4 +1,6 @@
 cobertura.ser
-stacktrace.log
+*.log
 /target
+/plugin.xml
+/grails-spring-security-openid-*.zip
 
