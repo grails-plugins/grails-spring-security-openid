@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.codehaus.groovy.grails.plugins.springsecurity.NullLogoutHandlerRememberMeServices
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.NullLogoutHandlerRememberMeServices
 import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdAuthenticationFailureHandler 
 import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdUserDetailsService
 
@@ -29,9 +29,9 @@ import org.springframework.security.openid.OpenIDAuthenticationFilter
 
 class SpringSecurityOpenidGrailsPlugin {
 
-	String version = '0.1.1'
-	String grailsVersion = '1.2.2 > *'
-	Map dependsOn = ['springSecurityCore': '0.2 > *']
+	String version = '1.0'
+	String grailsVersion = '1.2.3 > *'
+	Map dependsOn = ['springSecurityCore': '1.0 > *']
 	List pluginExcludes = [
 		'grails-app/domain/**',
 		'docs/**',
