@@ -20,16 +20,23 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		runtime('org.springframework.security:org.springframework.security.openid:3.0.3.RELEASE') {
-			excludes 'com.springsource.javax.servlet',
-			         'com.springsource.org.aopalliance',
-			         'com.springsource.org.apache.commons.logging',
-			         'com.springsource.org.apache.xmlcommons',
-			         'org.springframework.aop',
-			         'org.springframework.beans',
-			         'org.springframework.context',
-			         'org.springframework.core',
-			         'org.springframework.web'
+		runtime('org.springframework.security:org.springframework.security.openid:3.0.4.RELEASE') {
+			transitive = false
+		}
+		runtime('org.openid4java:com.springsource.org.openid4java:0.9.5') {
+			transitive = false
+		}
+		runtime('org.apache.commons:com.springsource.org.apache.commons.httpclient:3.1.0') {
+			transitive = false
+		}
+		runtime('org.apache.xerces:com.springsource.org.apache.xerces:2.9.1') {
+			transitive = false
+		}
+		runtime('org.apache.xerces:com.springsource.org.apache.xerces:2.9.1') {
+			transitive = false
+		}
+		runtime('net.sourceforge.nekohtml:com.springsource.org.cyberneko.html:1.9.13') {
+			transitive = false
 		}
 	}
 }
