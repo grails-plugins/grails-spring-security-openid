@@ -35,7 +35,8 @@ class SpringSecurityOpenidGrailsPlugin {
 	List pluginExcludes = [
 		'grails-app/domain/**',
 		'docs/**',
-		'src/docs/**'
+		'src/docs/**',
+		'scripts/CreateOpenIdTestApps.groovy'
 	]
 
 	String author = 'Burt Beckwith'
