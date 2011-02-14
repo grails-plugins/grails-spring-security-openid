@@ -16,6 +16,8 @@ security {
 
 	openid {
 
+		active = true
+
 		claimedIdentityFieldName = 'openid_identifier'
 
 		nonceMaxSeconds = 300
