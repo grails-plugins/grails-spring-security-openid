@@ -11,7 +11,7 @@ grails.project.dependency.resolution = {
 
 	log 'warn'
 
-	repositories {        
+	repositories {
 		grailsPlugins()
 		grailsHome()
 		grailsCentral()

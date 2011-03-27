@@ -108,7 +108,7 @@ private void runQuickstart() {
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token') {
 		ant.arg value: 'com.testopenid.PersistentLogin'
 	}
-	
+
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-openid') {
 		ant.arg value: 'com.testopenid.OpenID'
 	}
