@@ -1,4 +1,4 @@
-The OpenID plugin adds [OpenID|http://en.wikipedia.org/wiki/OpenID] login support to a Grails application that uses Spring Security. It depends on the [Spring Security Core plugin|http://grails.org/plugin/spring-security-core].
+The OpenID plugin adds [OpenID|http://en.wikipedia.org/wiki/OpenID] login support to a Grails application that uses Spring Security. It depends on the [Spring Security Core plugin|http://grails.org/plugin/spring-security-core] and requires at least version 1.1.1.
 
 Using OpenID authentication frees you from having to maintain passwords for those users, but it also poses some challenges.
 

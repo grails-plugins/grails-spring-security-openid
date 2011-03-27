@@ -29,9 +29,9 @@ import org.springframework.security.openid.OpenIDAuthenticationFilter
 
 class SpringSecurityOpenidGrailsPlugin {
 
-	String version = '1.0.1'
+	String version = '1.0.2'
 	String grailsVersion = '1.2.3 > *'
-	Map dependsOn = [springSecurityCore: '1.0 > *']
+	Map dependsOn = [springSecurityCore: '1.1.1 > *']
 	List pluginExcludes = [
 		'grails-app/domain/**',
 		'docs/**',
