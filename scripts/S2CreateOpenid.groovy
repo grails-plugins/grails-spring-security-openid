@@ -82,7 +82,7 @@ private void updateConfig() {
 	def configFile = new File(appDir, 'conf/Config.groovy')
 	if (configFile.exists()) {
 		configFile.withWriterAppend {
-			it.writeLine "grails.plugins.springsecurity.openid.domainClass = '$templateAttributes.fullClassName'"
+			it.writeLine "\ngrails.plugins.springsecurity.openid.domainClass = '$templateAttributes.fullClassName'"
 		}
 	}
 }
