@@ -149,7 +149,7 @@ class OpenIdController {
 	 * @return  true if successful
 	 */
 	private boolean createNewAccount(String username, String password, String openId) {
-		${userClassName}.withTransaction { status ->
+		boolean created = ${userClassName}.withTransaction { status ->
 			def config = SpringSecurityUtils.securityConfig
 
 			password = springSecurityService.encodePassword(password)
@@ -164,8 +164,9 @@ class OpenIdController {
 			for (roleName in config.openid.registration.roleNames) {
 				${userRoleClassName}.create user, ${roleClassName}.findBy${authorityCapName}(roleName)
 			}
+			return true
 		}
-		true
+		return created
 	}
 
 	/**
