@@ -51,11 +51,11 @@ public class OpenIdAuthenticationFailureHandler extends AjaxAwareAuthenticationF
 	@Override
 	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
 			final AuthenticationException exception) throws IOException, ServletException {
-		
+
 		if (exception.getMessage().contains("Unable to process claimed identity")) { //TODO Not the best way
-            super.onAuthenticationFailure(request, response, new InvalidOpenidEndpoint(exception));
+			super.onAuthenticationFailure(request, response, new InvalidOpenidEndpoint(exception));
 			return;
-        }
+		}
 
 		boolean createMissingUsers = Boolean.TRUE.equals(
 				ReflectionUtils.getConfigProperty("openid.registration.autocreate"));
