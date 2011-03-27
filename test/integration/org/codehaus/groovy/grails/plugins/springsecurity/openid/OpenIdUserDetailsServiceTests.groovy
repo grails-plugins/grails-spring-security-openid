@@ -15,7 +15,6 @@
 package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
-
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 import test.TestUser
@@ -31,7 +30,6 @@ class OpenIdUserDetailsServiceTests extends GroovyTestCase {
 	private static final String openId1 = 'foo@yahoo.com'
 	private static final String openId2 = 'https://foo.openidprovider.net'
 
-	def session
 	def sessionFactory
 	def userDetailsService
 
@@ -43,7 +41,6 @@ class OpenIdUserDetailsServiceTests extends GroovyTestCase {
 	protected void setUp() {
 		super.setUp()
 		CH.config = new ConfigObject()
-		session = sessionFactory.currentSession
 	}
 
 	/**
@@ -60,15 +57,15 @@ class OpenIdUserDetailsServiceTests extends GroovyTestCase {
 		assertTrue userDetailsService instanceof OpenIdUserDetailsService
 	}
 
-	void testLoadUser_NotFound() {
+	void testLoadUserByUsername_NotFound() {
 		String message = shouldFail(UsernameNotFoundException) {
-			userDetailsService.loadUser 'not_a_user', session
+			userDetailsService.loadUserByUsername 'not_a_user'
 		}
 
 		assertTrue message.contains('not found')
 	}
 
-	void testLoadUser() {
+	void testLoadUserByUsername() {
 		assertEquals 0, TestUser.count()
 		def user = new TestUser(username: username, password: 'password123', enabled: true)
 		user.addToOpenIds(url: openId1)
@@ -76,13 +73,15 @@ class OpenIdUserDetailsServiceTests extends GroovyTestCase {
 		user.save(flush: true)
 		assertEquals 1, TestUser.count()
 
-		session.clear()
-		assertEquals username, userDetailsService.loadUser(username, session).username
+		def session = sessionFactory.currentSession
 
 		session.clear()
-		assertEquals username, userDetailsService.loadUser(openId1, session).username
+		assertEquals username, userDetailsService.loadUserByUsername(username).username
 
 		session.clear()
-		assertEquals username, userDetailsService.loadUser(openId2, session).username
+		assertEquals username, userDetailsService.loadUserByUsername(openId1).username
+
+		session.clear()
+		assertEquals username, userDetailsService.loadUserByUsername(openId2).username
 	}
 }

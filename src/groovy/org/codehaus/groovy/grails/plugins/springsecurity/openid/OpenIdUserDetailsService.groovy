@@ -16,6 +16,8 @@ package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
 import org.codehaus.groovy.grails.plugins.springsecurity.GormUserDetailsService
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 /**
@@ -27,38 +29,35 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 class OpenIdUserDetailsService extends GormUserDetailsService {
 
 	@Override
-	protected loadUser(String username, session) {
+	UserDetails loadUserByUsername(String username, boolean loadRoles) throws UsernameNotFoundException {
 
 		def conf = SpringSecurityUtils.securityConfig
 		if (!conf.openid.userLookup.openIdsPropertyName) {
-			return super.loadUser(username, session)
+			return super.loadUser(username)
 		}
 
 		String userDomainClassName = conf.userLookup.userDomainClassName
 		String usernamePropertyName = conf.userLookup.usernamePropertyName
 
-		// first do the regular lookup by username
-		List<?> users = session.createQuery(
-				"FROM $userDomainClassName WHERE $usernamePropertyName = :username")
-				.setString('username', username)
-				.list()
-		if (users) {
-			return users[0]
+		Class<?> User = grailsApplication.getDomainClass(userDomainClassName).clazz
+
+		User.withTransaction { status ->
+
+			def user = User.findWhere((usernamePropertyName): username)
+
+			if (!user) {
+				String openIdDomainClassName = conf.openid.domainClass
+				Class<?> OpenID = grailsApplication.getDomainClass(openIdDomainClassName).clazz
+				user = OpenID.findByUrl(username)?.user
+			}
+
+			if (!user) {
+				log.warn "User not found: $username"
+				throw new UsernameNotFoundException('User not found', username)
+			}
+
+			Collection<GrantedAuthority> authorities = loadAuthorities(user, username, loadRoles)
+			createUserDetails(user, authorities)
 		}
-
-		String openIdDomainClassName = conf.openid.domainClass
-
-		// then check if it matches a linked OpenID
-		users = session.createQuery(
-				"SELECT o.user FROM $openIdDomainClassName o WHERE o.url=:url")
-				.setString('url', username)
-				.list()
-
-		if (!users) {
-			log.warn "User not found: $username"
-			throw new UsernameNotFoundException('User not found', username)
-		}
-
-		users[0]
 	}
 }
