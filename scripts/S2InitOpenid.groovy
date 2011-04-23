@@ -86,6 +86,15 @@ private void copyControllersAndViews() {
 
 	generateFile "$templateDir/OpenIdController.groovy.template",
 	             "$appDir/controllers/OpenIdController.groovy"
+	             
+    copyOpenIdSelectorArtifacts()
+}
+
+private void copyOpenIdSelectorArtifacts() {
+    copyFile "$templateDir/openid.css.template", "$basedir/web-app/css/openid.css"
+	copyFile "$templateDir/openid-prototype.js.template", "$basedir/web-app/js/openid-prototype.js"
+	copyFile "$templateDir/openid-en.js.template", "$basedir/web-app/js/openid-en.js"
+	copyFile "$templateDir/openid-providers-en.png", "$basedir/web-app/images/openid-providers-en.png"
 }
 
 setDefaultTarget 's2InitOpenid'
