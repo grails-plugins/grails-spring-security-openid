@@ -14,7 +14,7 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 import org.codehaus.groovy.grails.plugins.springsecurity.ReflectionUtils
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
@@ -49,7 +49,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	@Override
 	protected void setUp() {
 		super.setUp()
-		CH.config = new ConfigObject()
+		ApplicationHolder.application = new FakeApplication()
 		ReflectionUtils.setConfigProperty 'openid.registration.autocreate', true
 		ReflectionUtils.setConfigProperty 'ajaxHeader', 'ajaxHeader'
 		ReflectionUtils.setConfigProperty 'openid.registration.createAccountUri', OPENID_REDIRECT
@@ -122,7 +122,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	protected void tearDown() {
 		super.tearDown()
 		SCH.context.authentication = null
-		CH.config = new ConfigObject()
+		ApplicationHolder.application = null
 		SpringSecurityUtils.resetSecurityConfig()
 	}
 }
