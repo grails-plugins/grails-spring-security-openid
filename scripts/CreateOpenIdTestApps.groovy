@@ -19,7 +19,7 @@
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
 
-includeTargets << grailsScript('_GrailsBootstrap')
+includeTargets << new File("$springSecurityOpenidPluginDir/scripts/_OpenIdCommon.groovy")
 
 appName = null
 grailsHome = null
@@ -38,7 +38,7 @@ target(createOpenidTestApps: 'Creates OpenID test apps') {
 	}
 
 	new ConfigSlurper().parse(configFile.text).each { name, config ->
-		echo "\nCreating app based on configuration $name: ${config.flatten()}\n"
+		printMessage "\nCreating app based on configuration $name: ${config.flatten()}\n"
 		init name, config
 		createApp()
 		installPlugins()
@@ -139,7 +139,7 @@ private void deleteDir(String path) {
 			deleteAll = true
 		}
 		else if (!'y'.equalsIgnoreCase(result)) {
-			ant.echo "\nNot deleting $path"
+			printMessage "\nNot deleting $path"
 			exit 1
 		}
 	}
@@ -148,7 +148,7 @@ private void deleteDir(String path) {
 }
 
 private void error(String message) {
-	ant.echo "\nERROR: $message"
+	errorMessage "\nERROR: $message"
 	exit 1
 }
 

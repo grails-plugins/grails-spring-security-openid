@@ -31,7 +31,7 @@ target(s2CreateOpenid: 'Creates the OpenID domain class for the Spring Security 
 	createDomainClass()
 	updateConfig()
 
-	ant.echo """
+	printMessage """
 	*******************************************************
 	* Your OpenID link domain class has been created and  *
 	* your grails-app/conf/Config.groovy has been updated *
@@ -97,10 +97,10 @@ private parseArgs() {
 	args = args ? args.split('\n') : []
 	switch (args.size()) {
 		case 1:
-			ant.echo message: "Creating OpenID domain class ${args[0]}"
+			printMessage "Creating OpenID domain class ${args[0]}"
 			return args[0]
 		default:
-			ant.echo message: USAGE
+			errorMessage USAGE
 			System.exit 1
 			break
 	}

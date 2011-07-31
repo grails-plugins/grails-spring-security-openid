@@ -60,7 +60,7 @@ generateFile = { String templatePath, String outputPath ->
 
 	File templateFile = new File(templatePath)
 	if (!templateFile.exists()) {
-		ant.echo message: "\nERROR: $templatePath doesn't exist"
+		errorMessage "\nERROR: $templatePath doesn't exist"
 		return
 	}
 
@@ -73,7 +73,7 @@ generateFile = { String templatePath, String outputPath ->
 		templateEngine.createTemplate(templateFile.text).make(templateAttributes).writeTo(writer)
 	}
 
-	ant.echo message: "generated $outFile.absolutePath"
+	printMessage "generated $outFile.absolutePath"
 }
 
 splitClassName = { String fullName ->
@@ -95,7 +95,7 @@ splitClassName = { String fullName ->
 
 checkValue = { String value, String attributeName ->
 	if (!value) {
-		ant.echo message: "\nERROR: Cannot generate; grails.plugins.springsecurity.$attributeName isn't set"
+		errorMessage "\nERROR: Cannot generate; grails.plugins.springsecurity.$attributeName isn't set"
 		System.exit 1
 	}
 }
@@ -107,3 +107,6 @@ copyFile = { String from, String to ->
 
 	ant.copy file: from, tofile: to, overwrite: true
 }
+
+printMessage = { String message -> event('StatusUpdate', [message]) }
+errorMessage = { String message -> event('StatusError', [message]) }
