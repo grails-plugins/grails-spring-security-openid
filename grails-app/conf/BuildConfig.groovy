@@ -5,9 +5,7 @@ grails.project.docs.output.dir = 'docs' // for backwards-compatibility, the docs
 
 grails.project.dependency.resolution = {
 
-	inherits('global') {
-		excludes 'commons-codec' // Grails ships with 1.3, need 1.4
-	}
+	inherits 'global'
 
 	log 'warn'
 
@@ -16,26 +14,23 @@ grails.project.dependency.resolution = {
 		grailsHome()
 		grailsCentral()
 
-		ebr() // SpringSource  http://www.springsource.com/repository
+		mavenCentral()
 	}
 
 	dependencies {
-		runtime('org.springframework.security:org.springframework.security.openid:3.0.4.RELEASE') {
+		compile('org.springframework.security:spring-security-openid:3.0.5.RELEASE') {
 			transitive = false
 		}
-		runtime('org.openid4java:com.springsource.org.openid4java:0.9.5') {
+		compile('org.openid4java:openid4java-nodeps:0.9.5') {
 			transitive = false
 		}
-		runtime('org.apache.commons:com.springsource.org.apache.commons.httpclient:3.1.0') {
+		compile('commons-httpclient:commons-httpclient:3.1') {
 			transitive = false
 		}
-		runtime('org.apache.xerces:com.springsource.org.apache.xerces:2.9.1') {
+		compile('xerces:xercesImpl:2.9.1') {
 			transitive = false
 		}
-		runtime('org.apache.xerces:com.springsource.org.apache.xerces:2.9.1') {
-			transitive = false
-		}
-		runtime('net.sourceforge.nekohtml:com.springsource.org.cyberneko.html:1.9.13') {
+		compile('net.sourceforge.nekohtml:nekohtml:1.9.14') {
 			transitive = false
 		}
 	}
