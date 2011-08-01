@@ -24,6 +24,7 @@ includeTargets << new File("$springSecurityOpenidPluginDir/scripts/_OpenIdCommon
 appName = null
 grailsHome = null
 dotGrails = null
+grailsVersion = null
 projectDir = null
 pluginVersion = null
 pluginZip = null
@@ -67,7 +68,8 @@ private void init(String name, config) {
 	projectDir = config.projectDir
 	appName = 'spring-security-openid-test-' + name
 	testprojectRoot = "$projectDir/$appName"
-	dotGrails = config.dotGrails
+	grailsVersion = config.grailsVersion
+	dotGrails = config.dotGrails + '/' + grailsVersion
 }
 
 private void createApp() {
@@ -83,19 +85,34 @@ private void createApp() {
 }
 
 private void installPlugins() {
-
-	// install plugins in local dir to make optional STS setup easier
-	new File("$testprojectRoot/grails-app/conf/BuildConfig.groovy").withWriterAppend {
+	
+	File buildConfig = new File(testprojectRoot, 'grails-app/conf/BuildConfig.groovy')
+	String contents = buildConfig.text
+	if (!grailsVersion.startsWith('1')) {
+		contents = contents.replace('//mavenRepo "http://repository.jboss.com/maven2/"', """
+def localPluginResolver = new org.apache.ivy.plugins.resolver.FileSystemResolver()
+String path = new File('$springSecurityOpenidPluginDir').absolutePath
+localPluginResolver.addIvyPattern("\${path}/grails-[module]-[revision](-[classifier]).xml")
+localPluginResolver.addArtifactPattern "\${path}/grails-[module]-[revision](-[classifier]).[ext]"
+localPluginResolver.local = true
+localPluginResolver.name = 'localPluginResolver'
+resolver localPluginResolver
+""")
+	}
+	
+	buildConfig.withWriter {
+		it.writeLine contents
+		// install plugins in local dir to make optional STS setup easier
 		it.writeLine 'grails.project.plugins.dir = "plugins"'
 	}
-
+	
 	ant.mkdir dir: "${testprojectRoot}/plugins"
 
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
 		ant.arg value: pluginZip.absolutePath
 	}
 }
-
+	
 private void runQuickstart() {
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart') {
 		ant.arg value: 'com.testopenid'
