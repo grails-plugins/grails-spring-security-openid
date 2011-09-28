@@ -78,7 +78,11 @@ class BootStrap {
    def springSecurityService
 
    def init = { servletContext ->
-      String password = springSecurityService.encodePassword('password')
+      // encode the password only if you're using an older version of the
+      // spring-security-core plugin and you don't have encoding logic in
+      // your "User" domain class:
+      // String password = springSecurityService.encodePassword('password')
+      String password = 'password'
 
       def roleAdmin = new Role(authority: 'ROLE_ADMIN').save()
       def roleUser = new Role(authority: 'ROLE_USER').save()
@@ -170,4 +174,3 @@ Since you've already associated the previous OpenID with a user, you either need
 Login using either the new OpenID or the original after restarting, and after authenticating externally you'll be redirected to the registration page. This time create a new user. By default the password validation rules are rather strict and you can change them, but for now enter a password that's at least 8 characters and contains at least one number and at least one symbol (e.g. !, #, $, %, etc.)
 
 You should be redirected to [http://localhost:8080/openidtest/secure/users|http://localhost:8080/openidtest/secure/users] after creating the account. Now logout and log back in, both with the username/password for the account you created and the OpenID you linked and both should work.
-
