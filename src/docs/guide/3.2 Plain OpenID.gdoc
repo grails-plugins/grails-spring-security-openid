@@ -7,6 +7,8 @@ Edit the generated @grails-app/controllers/OpenIdController.groovy@ and replace 
 {code}
 def createAccount = {
 
+   def config = SpringSecurityUtils.securityConfig
+
    String openId = session[OIAFH.LAST_OPENID_USERNAME]
    if (!openId) {
       flash.error = 'Sorry, an OpenID was not found'
@@ -22,8 +24,6 @@ def createAccount = {
 
    session.removeAttribute OIAFH.LAST_OPENID_USERNAME
    session.removeAttribute OIAFH.LAST_OPENID_ATTRIBUTES
-
-   def config = SpringSecurityUtils.securityConfig
 
    def savedRequest = session[DefaultSavedRequest.SPRING_SECURITY_SAVED_REQUEST_KEY]
    if (savedRequest && !config.successHandler.alwaysUseDefault) {
