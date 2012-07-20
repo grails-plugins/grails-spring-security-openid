@@ -33,7 +33,7 @@ class OpenIdUserDetailsService extends GormUserDetailsService {
 
 		def conf = SpringSecurityUtils.securityConfig
 		if (!conf.openid.userLookup.openIdsPropertyName) {
-			return super.loadUser(username)
+			return super.loadUserByUsername(username)
 		}
 
 		String userDomainClassName = conf.userLookup.userDomainClassName
