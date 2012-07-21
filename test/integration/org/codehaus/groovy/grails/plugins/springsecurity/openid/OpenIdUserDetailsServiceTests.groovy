@@ -14,7 +14,6 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 
 import test.TestUser
@@ -32,26 +31,6 @@ class OpenIdUserDetailsServiceTests extends GroovyTestCase {
 
 	def sessionFactory
 	def userDetailsService
-
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
-	protected void setUp() {
-		super.setUp()
-		CH.config = new ConfigObject()
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
-	protected void tearDown() {
-		super.tearDown()
-		CH.config = null
-	}
 
 	void testIsOpenIdUserDetailsService() {
 		assertTrue userDetailsService instanceof OpenIdUserDetailsService

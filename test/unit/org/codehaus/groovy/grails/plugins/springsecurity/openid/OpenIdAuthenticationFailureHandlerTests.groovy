@@ -14,14 +14,10 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
-
 import org.codehaus.groovy.grails.plugins.springsecurity.ReflectionUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils;
-
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
-
 import org.springframework.security.authentication.AccountExpiredException
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -49,7 +45,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	@Override
 	protected void setUp() {
 		super.setUp()
-		ApplicationHolder.application = new FakeApplication()
+		ReflectionUtils.application = new FakeApplication()
 		ReflectionUtils.setConfigProperty 'openid.registration.autocreate', true
 		ReflectionUtils.setConfigProperty 'ajaxHeader', 'ajaxHeader'
 		ReflectionUtils.setConfigProperty 'openid.registration.createAccountUri', OPENID_REDIRECT
@@ -122,7 +118,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	protected void tearDown() {
 		super.tearDown()
 		SCH.context.authentication = null
-		ApplicationHolder.application = null
+		ReflectionUtils.application = null
 		SpringSecurityUtils.resetSecurityConfig()
 	}
 }
