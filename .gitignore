@@ -2,6 +2,6 @@ cobertura.ser
 *.log
 /target
 /plugin.xml
-/grails-spring-security-openid-*.zip
-
+*.zip
 /testapps.config.groovy
+/.settings/
