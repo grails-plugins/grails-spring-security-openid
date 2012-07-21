@@ -11,31 +11,29 @@ grails.project.dependency.resolution = {
 		grailsCentral()
 		mavenLocal()
 		mavenCentral()
+		mavenRepo 'http://guice-maven.googlecode.com/svn/trunk'
 	}
 
 	dependencies {
 		compile('org.springframework.security:spring-security-openid:3.0.7.RELEASE') {
-			excludes 'spring-security-web', 'spring-security-core', 'spring-core',
-			         'spring-web', 'spring-test', 'servlet-api', 'openid4java',
-			         'junit', 'mockito-core', 'jmock-junit4'
+			excludes 'jmock-junit4', 'junit', 'mockito-core', 'openid4java',
+			         'servlet-api', 'spring-core', 'spring-security-core',
+			         'spring-security-web', 'spring-test', 'spring-web'
 		}
-		compile('org.openid4java:openid4java-nodeps:0.9.5') {
-			excludes 'commons-logging', 'commons-httpclient', 'nekohtml', 'openxri-syntax',
-			         'openxri-client', 'ehcache', 'higgins-configuration-api',
+		compile('org.openid4java:openid4java-nodeps:0.9.6') {
+			excludes 'axiom-api', 'commons-logging', 'ehcache', 'higgins-configuration-api',
 			         'higgins-sts-api', 'higgins-sts-common', 'higgins-sts-server-token-handler',
-			         'higgins-sts-spi', 'xercesImpl', 'xmlsec', 'axiom-api',
-			         'higgins-configuration-api', 'higgins-sts-api', 'higgins-sts-common',
-			         'higgins-sts-server-token-handler', 'higgins-sts-spi', 'spring-jdbc',
-			         'servlet-api', 'junit', 'jdom', 'jetty', 'jetty-util',
-			         'log4j', 'jwebunit-htmlunit-plugin'
+			         'higgins-sts-spi', 'httpclient', 'jcip-annotations', 'jdom', 'jetty',
+			         'jetty-util', 'junit', 'jwebunit-htmlunit-plugin', 'log4j', 'nekohtml',
+			         'openxri-client', 'openxri-syntax', 'servlet-api', 'spring-jdbc', 'xercesImpl', 'xmlsec'
 		}
-		compile('commons-httpclient:commons-httpclient:3.1') {
-			excludes 'junit', 'commons-logging', 'commons-codec'
+		runtime('org.apache.httpcomponents:httpclient:4.1.1') {
+			excludes 'commons-codec', 'commons-logging', 'junit', 'mockito-core'
 		}
 		compile('xerces:xercesImpl:2.9.1') {
 			excludes 'xml-apis', 'xml-resolver'
 		}
-		compile('net.sourceforge.nekohtml:nekohtml:1.9.14') {
+		compile('net.sourceforge.nekohtml:nekohtml:1.9.15') {
 			excludes 'xercesImpl'
 		}
 	}
