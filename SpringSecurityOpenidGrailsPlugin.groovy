@@ -43,15 +43,12 @@ class SpringSecurityOpenidGrailsPlugin {
 	String authorEmail = 'beckwithb@vmware.com'
 	String title = 'OpenID authentication support for the Spring Security plugin.'
 	String description = 'OpenID authentication support for the Spring Security plugin.'
-
-   String documentation = 'http://grails.org/plugin/spring-security-openid'
+	String documentation = 'http://grails-plugins.github.com/grails-spring-security-openid'
 
 	String license = 'APACHE'
-	def organization = [ name: 'SpringSource', url: 'http://www.springsource.org/' ]
-	def developers = [
-		 [ name: 'Burt Beckwith', email: 'beckwithb@vmware.com' ] ]
-	def issueManagement = [ system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYOPENID' ]
-	def scm = [ url: 'https://github.com/grails-plugins/grails-spring-security-openid' ]
+	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYOPENID']
+	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-openid']
 
 	def doWithSpring = {
 
@@ -68,7 +65,7 @@ class SpringSecurityOpenidGrailsPlugin {
 			return
 		}
 
-		println 'Configuring Spring Security OpenID ...'
+		println '\nConfiguring Spring Security OpenID ...'
 
 		SpringSecurityUtils.registerProvider 'openIDAuthProvider'
 		SpringSecurityUtils.registerFilter 'openIDAuthenticationFilter',
@@ -126,6 +123,8 @@ class SpringSecurityOpenidGrailsPlugin {
 			// auth is external, so no password, so regular cookie isn't possible
 			rememberMeServices(NullLogoutHandlerRememberMeServices)
 		}
+
+		println '... finished configuring Spring Security OpenID\n'
 	}
 
 	def doWithApplicationContext = { ctx ->
