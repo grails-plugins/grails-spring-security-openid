@@ -13,6 +13,7 @@ grails.plugins.springsecurity.openid.domainClass =
 openid.claimedIdentityFieldName | 'openid_identifier' | the login name form parameter
 openid.nonceMaxSeconds | 300 | maximum life of the generated nonce shared with the OpenID provider; determines how long the authentication is allowed to take
 openid.domainClass | 'OpenID' | the full class name of the many-to-one OpenID domain class
+openid.encodePassword | @false@ | whether to encode the password in OpenIdController.createNewAccount (set to @true@ if not using the new style of User domain class that auto-encrypts)
 openid.registration.autocreate | @true@ | if @true@ will redirect valid OpenID authentications to the create and link user workflows, otherwise shows the standard login fail page
 openid.registration.requiredAttributes | none | required Attribute Exchange attributes
 openid.registration.optionalAttributes | \[email\: 'http://schema.openid.net/contact/email'\] | optional Attribute Exchange attributes
@@ -20,5 +21,3 @@ openid.registration.createAccountUri | '/login/openIdCreateAccount' | redirect a
 openid.registration.roleNames | \['ROLE_USER'\] | a list of names of roles to grant to users who self-register after an OpenID authentication; the roles must already exist
 openid.userLookup.openIdsPropertyName | 'openIds' | the name of the property in the user class for the OpenID domain class collection
 {table}
-
-

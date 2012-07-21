@@ -35,5 +35,8 @@ security {
 		userLookup {
 			openIdsPropertyName = 'openIds'
 		}
+
+		encodePassword = false
+
 	}
 }

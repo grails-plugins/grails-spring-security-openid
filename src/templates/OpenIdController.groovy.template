@@ -123,7 +123,7 @@ class OpenIdController {
 	 *
 	 * @param username the user's login name
 	 */
-	private void authenticateAndRedirect(String username) {
+	protected void authenticateAndRedirect(String username) {
 		session.removeAttribute OIAFH.LAST_OPENID_USERNAME
 		session.removeAttribute OIAFH.LAST_OPENID_ATTRIBUTES
 
@@ -148,11 +148,11 @@ class OpenIdController {
 	 * @param openId  the associated OpenID
 	 * @return  true if successful
 	 */
-	private boolean createNewAccount(String username, String password, String openId) {
+	protected boolean createNewAccount(String username, String password, String openId) {
 		boolean created = ${userClassName}.withTransaction { status ->
 			def config = SpringSecurityUtils.securityConfig
 
-			password = springSecurityService.encodePassword(password)
+			password = encodePassword(password)
 			def user = new ${userClassName}(${usernamePropertyName}: username, ${passwordPropertyName}: password, ${enabledPropertyName}: true)
 
 			user.addToOpenIds(url: openId)
@@ -169,6 +169,15 @@ class OpenIdController {
 		return created
 	}
 
+	protected String encodePassword(String password) {
+		def config = SpringSecurityUtils.securityConfig
+		def encode = config.openid.encodePassword
+		if (!(encode instanceof Boolean) || (encode instanceof Boolean && encode)) {
+			password = springSecurityService.encodePassword(password, salt)
+		}
+		password
+	}
+
 	/**
 	 * Associates an OpenID with an existing account. Needs the user's password to ensure
 	 * that the user owns that account, and authenticates to verify before linking.
@@ -176,7 +185,7 @@ class OpenIdController {
 	 * @param password  the password
 	 * @param openId  the associated OpenID
 	 */
-	private void registerAccountOpenId(String username, String password, String openId) {
+	protected void registerAccountOpenId(String username, String password, String openId) {
 		// check that the user exists, password is valid, etc. - doesn't actually log in or log out,
 		// just checks that user exists, password is valid, account not locked, etc.
 		daoAuthenticationProvider.authenticate(
@@ -195,7 +204,7 @@ class OpenIdController {
 	 * For the initial form display, copy any registered AX values into the command.
 	 * @param command  the command
 	 */
-	private void copyFromAttributeExchange(OpenIdRegisterCommand command) {
+	protected void copyFromAttributeExchange(OpenIdRegisterCommand command) {
 		List attributes = session[OIAFH.LAST_OPENID_ATTRIBUTES] ?: []
 		for (attribute in attributes) {
 			// TODO document
