@@ -1,4 +1,4 @@
-/* Copyright 2011 the original author or authors.
+/* Copyright 2011-2012 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ private void createApp() {
 }
 
 private void installPlugins() {
-	
+
 	File buildConfig = new File(testprojectRoot, 'grails-app/conf/BuildConfig.groovy')
 	String contents = buildConfig.text
 	if (!grailsVersion.startsWith('1')) {
@@ -99,20 +99,20 @@ localPluginResolver.name = 'localPluginResolver'
 resolver localPluginResolver
 """)
 	}
-	
+
 	buildConfig.withWriter {
 		it.writeLine contents
 		// install plugins in local dir to make optional STS setup easier
 		it.writeLine 'grails.project.plugins.dir = "plugins"'
 	}
-	
+
 	ant.mkdir dir: "${testprojectRoot}/plugins"
 
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
 		ant.arg value: pluginZip.absolutePath
 	}
 }
-	
+
 private void runQuickstart() {
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart') {
 		ant.arg value: 'com.testopenid'
