@@ -31,7 +31,7 @@ class SpringSecurityOpenidGrailsPlugin {
 
 	String version = '1.0.3'
 	String grailsVersion = '1.2.3 > *'
-	Map dependsOn = [springSecurityCore: '1.1.1 > *']
+	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'grails-app/domain/**',
 		'docs/**',
