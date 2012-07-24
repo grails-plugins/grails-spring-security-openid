@@ -1,0 +1,7 @@
+cobertura.ser
+*.log
+/target
+/plugin.xml
+*.zip
+/testapps.config.groovy
+/.settings/

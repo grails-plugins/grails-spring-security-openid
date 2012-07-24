@@ -1,0 +1,20 @@
+h1. s2-init-openid
+
+h2. Purpose
+
+Creates an OpenID controller and GSPs. The script takes no parameters.
+
+h2. Usage
+
+bc.
+   grails s2-init-openid
+
+h2. Description
+
+Creates example GSPs and an OpenID controller:
+* @grails-app/views/openId/auth.gsp@ - an enhanced login page that toggles between an OpenID form with one input and a standard username/password login form
+* @grails-app/views/openId/createAccount.gsp@ - allows a user who successfully authenticated via OpenID to create a new local account and associate the OpenID with it
+* @grails-app/views/openId/linkAccount.gsp@ - allows a user who successfully authenticated via OpenID to link the OpenID with an existing local account
+* @grails-app/controllers/OpenIdController.groovy@ - manages registration and link workflows
+* @grails-app/i18n/spring-security-openid.messages.properties@ - i18n messages for registration and link workflows
+

@@ -1,0 +1,14 @@
+${packageDeclaration}
+
+${userImport}
+
+class ${className} {
+
+	String url
+
+	static belongsTo = [user: ${userClassName}]
+
+	static constraints = {
+		url unique: true
+	}
+}
