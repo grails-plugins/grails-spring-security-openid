@@ -82,7 +82,7 @@ private void copyControllersAndViews() {
 	copyFile "$templateDir/linkAccount.gsp.template", "$appDir/views/openId/linkAccount.gsp"
 
 	copyFile "$templateDir/spring-security-openid.messages.properties.template",
-		"$appDir/i18n/spring-security-openid.messages.properties"
+	         "$appDir/i18n/spring-security-openid.messages.properties"
 
 	generateFile "$templateDir/OpenIdController.groovy.template",
 	             "$appDir/controllers/OpenIdController.groovy"
