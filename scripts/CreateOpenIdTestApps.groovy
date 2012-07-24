@@ -93,6 +93,13 @@ private void installPlugins() {
 
 	buildConfig.withWriter { it.writeLine contents }
 
+	File config = new File(testprojectRoot, 'grails-app/conf/Config.groovy')
+	contents = buildConfig.text
+	contents += '''
+grails.plugins.springsecurity.openid.encodePassword = true
+'''
+	config.withWriter { it.writeLine contents }
+
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin', ['spring-security-core', '1.2.7.3'])
 
 	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin', [pluginZip.absolutePath])
