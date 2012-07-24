@@ -79,56 +79,35 @@ private void createApp() {
 	deleteDir testprojectRoot
 	deleteDir "$dotGrails/projects/$appName"
 
-	callGrails(grailsHome, projectDir, 'dev', 'create-app') {
-		ant.arg value: appName
-	}
+	callGrails(grailsHome, projectDir, 'dev', 'create-app', [appName])
 }
 
 private void installPlugins() {
 
 	File buildConfig = new File(testprojectRoot, 'grails-app/conf/BuildConfig.groovy')
 	String contents = buildConfig.text
-	if (!grailsVersion.startsWith('1')) {
-		contents = contents.replace('//mavenRepo "http://repository.jboss.com/maven2/"', """
-def localPluginResolver = new org.apache.ivy.plugins.resolver.FileSystemResolver()
-String path = new File('$springSecurityOpenidPluginDir').absolutePath
-localPluginResolver.addIvyPattern("\${path}/grails-[module]-[revision](-[classifier]).xml")
-localPluginResolver.addArtifactPattern "\${path}/grails-[module]-[revision](-[classifier]).[ext]"
-localPluginResolver.local = true
-localPluginResolver.name = 'localPluginResolver'
-resolver localPluginResolver
-""")
-	}
 
-	buildConfig.withWriter {
-		it.writeLine contents
-		// install plugins in local dir to make optional STS setup easier
-		it.writeLine 'grails.project.plugins.dir = "plugins"'
-	}
+	contents = contents.replace('grails.project.class.dir = "target/classes"', "grails.project.work.dir = 'target'")
+	contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
+	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
 
-	ant.mkdir dir: "${testprojectRoot}/plugins"
+	buildConfig.withWriter { it.writeLine contents }
 
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin') {
-		ant.arg value: pluginZip.absolutePath
-	}
+	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin', ['spring-security-core', '1.2.7.3'])
+
+	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin', [pluginZip.absolutePath])
+
+	callGrails(grailsHome, testprojectRoot, 'dev', 'compile')
 }
 
 private void runQuickstart() {
-	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart') {
-		ant.arg value: 'com.testopenid'
-		ant.arg value: 'User'
-		ant.arg value: 'Role'
-	}
+	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart', ['com.testopenid', 'User', 'Role'])
 
 	callGrails grailsHome, testprojectRoot, 'dev', 's2-init-openid'
 
-	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token') {
-		ant.arg value: 'com.testopenid.PersistentLogin'
-	}
+	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token', ['com.testopenid.PersistentLogin'])
 
-	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-openid') {
-		ant.arg value: 'com.testopenid.OpenID'
-	}
+	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-openid', ['com.testopenid.OpenID'])
 }
 
 private void createProjectFiles() {
@@ -169,12 +148,26 @@ private void error(String message) {
 	exit 1
 }
 
-private void callGrails(String grailsHome, String dir, String env, String action, extraArgs = null) {
-	ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: 'true') {
+private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null) {
+
+	String resultproperty = 'exitCode' + System.currentTimeMillis()
+	String outputproperty = 'execOutput' + System.currentTimeMillis()
+
+	println "Running 'grails $env $action ${extraArgs?.join(' ') ?: ''}'"
+
+	ant.exec(executable: "${grailsHome}/bin/grails", dir: dir, failonerror: false,
+	         resultproperty: resultproperty, outputproperty: outputproperty) {
 		ant.env key: 'GRAILS_HOME', value: grailsHome
 		ant.arg value: env
 		ant.arg value: action
-		extraArgs?.call()
+		extraArgs.each { ant.arg value: it }
+	}
+
+	println ant.project.getProperty(outputproperty)
+
+	int exitCode = ant.project.getProperty(resultproperty) as Integer
+	if (exitCode) {
+		exit exitCode
 	}
 }
 
