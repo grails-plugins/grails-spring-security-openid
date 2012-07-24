@@ -173,7 +173,7 @@ class OpenIdController {
 		def config = SpringSecurityUtils.securityConfig
 		def encode = config.openid.encodePassword
 		if (!(encode instanceof Boolean) || (encode instanceof Boolean && encode)) {
-			password = springSecurityService.encodePassword(password, salt)
+			password = springSecurityService.encodePassword(password)
 		}
 		password
 	}
