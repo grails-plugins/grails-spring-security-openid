@@ -1,0 +1,326 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <head>
+        <title>OpenID authentication support for the Spring Security plugin. 1.0.4</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+        <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <script type="text/javascript">
+function addJsClass(el) {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+    </head>
+
+    <body class="body" onload="addJsClass();">
+        <div id="navigation">
+            <ul>
+                <li>
+                    <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                        <a href="../guide/index.html" class="button">Table of contents</a>
+                        <div id="nav-summary-childs" style="display:none;">
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#2.%20Usage"><strong>2</strong><span>Usage</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#3.%20Tutorials"><strong>3</strong><span>Tutorials</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#4.%20Configuration"><strong>4</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0"><a href="#5.%20Attribute%20Exchange"><strong>5</strong><span>Attribute Exchange</span></a></div>
+                            
+                        </div>
+                    </div>
+                </li>
+                <li class="separator selected">
+                    <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+                </li>
+            </ul>
+        </div>
+        <div id="header">
+            <div class="images clearfix">
+                
+                
+            </div>
+            <p>OpenID authentication support for the Spring Security plugin.</p>
+        </div>
+
+
+        <table id="colset" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td id="col1">
+                    <div id="main" class="corner-all">
+
+                        <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                        <div class="project">
+                            <h1>OpenID authentication support for the Spring Security plugin. - Reference Documentation</h1>
+                            <p><strong>Authors:</strong> Burt Beckwith</p>
+                            <p><strong>Version:</strong> 1.0.4</p>
+                            
+                        </div>
+
+                        
+                        <div id="table-of-content">
+                            <h2>Table of Contents</h2>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#1.%20Introduction"><strong>1</strong><span>Introduction</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#1.1%20History"><strong>1.1</strong><span>History</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#2.%20Usage"><strong>2</strong><span>Usage</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#3.%20Tutorials"><strong>3</strong><span>Tutorials</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#3.1%20User%20registration%20and%20linking"><strong>3.1</strong><span>User registration and linking</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:10px"><a href="#3.2%20Plain%20OpenID"><strong>3.2</strong><span>Plain OpenID</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#4.%20Configuration"><strong>4</strong><span>Configuration</span></a></div>
+                            
+                            <div class="toc-item" style="margin-left:0px"><a href="#5.%20Attribute%20Exchange"><strong>5</strong><span>Attribute Exchange</span></a></div>
+                            
+                            <div style="clear:both" ></div>
+                        </div>
+                        
+                        
+
+<h1 id="1. Introduction">1 Introduction</h1>
+The OpenID plugin adds <a href="http://en.wikipedia.org/wiki/OpenID" target="blank">OpenID</a> login support to a Grails application that uses Spring Security. It depends on the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core plugin</a> and requires at least version 1.1.1.<p class="paragraph"/>Using OpenID authentication frees you from having to maintain passwords for those users, but it also poses some challenges.<p class="paragraph"/>In a typical application that uses form-based logins with Spring Security, all of your user information is stored in the database. Since an OpenID user authenticates at an OpenID provider, you don't maintain their password but Spring Security needs information to populate an <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/core/Authentication.html" target="blank">Authentication</a> - username, roles, and account statuses (enabled, locked, etc.) Only the username is available from the OpenID login (plus optionally some attributes made available by <a href="http://openid.net/specs/openid-attribute-exchange-1_0.html" target="blank">Attribute Exchange</a>), and the rest is provided by your application, usually from the database.<p class="paragraph"/>The plugin supports two workflows to integrate OpenID authentication with local user accounts. One is user registration, and the other is linking one or more OpenIDs with a valid local account. Both workflows are triggered by a successful OpenID authentication followed by a <code>UsernameNotFoundException</code> indicating that a local user wasn't found. The plugin provides basic implementations of both workflows but each application is different, so you'll most likely need to customize and extend the initial implementation.
+
+
+
+<h2 id="1.1 History">1.1 History</h2>
+<ul class="star">
+<li>Version 1.0.4</li>
+<ul class="star">
+<li>released July 24, 2012</li>
+</ul>
+<li>Version 1.0.3</li>
+<ul class="star">
+<li>released July 31, 2011</li>
+</ul>
+<li>Version 1.0.2</li>
+<ul class="star">
+<li>released March 27, 2011</li>
+</ul>
+<li>Version 1.0.1</li>
+<ul class="star">
+<li>released February 13, 2011</li>
+</ul>
+<li>Version 1.0</li>
+<ul class="star">
+<li>released July 27, 2010</li>
+</ul>
+<li>Version 0.1.1</li>
+<ul class="star">
+<li>released May 12, 2010</li>
+</ul>
+<li>Version 0.1</li>
+<ul class="star">
+<li>released May 03, 2010</li>
+</ul></ul><p class="paragraph"/>
+
+
+<h1 id="2. Usage">2 Usage</h1>
+The central issue with integrating OpenID logins with local application users is that OpenID providers can allow multiple login names but the provider response will always be whatever their canonical name for your identity is. For example, I can login with my Yahoo address <code>burtbeckwith&#64;yahoo.com</code> but what is returned is a URL that looks like <code>https://me.yahoo.com/a/CkkjY454mYx10td2e05dqasd5Jedt8VAgg--%27</code>. If I had registered as a regular user on the site with <code>burtbeckwith&#64;yahoo.com</code> as my username, my login would fail unexpectedly. To get it to work I'd have to know my <code>https://me.yahoo.com/...</code> name to propertly register, which will frustrate users.<p class="paragraph"/>When a user authenticates in Spring Security, an <code>Authentication</code> is created and stored in a <code>ThreadLocal</code> by the <code>SecurityContextHolder</code>. Typically the <code>Authentication</code>'s principal is an instance of <code>UserDetails</code> (in the plugin this is implemented by the <code>GrailsUser</code> class) and this is a very simple class. It's really just a POJO with fields for username, password, granted authorities, and status booleans (enabled, account locked, etc.) So when an OpenID user has no associated local account, there's no direct way to specify authorities or the statuses (the password is optional in this case since that's only used for database authentication). We can assume the user is enabled as long as the OpenID authentication succeeded, so we really just need a way to determine what an OpenID user's roles are, otherwise they won't be able to do any more in the application than a non-authenticated user.<p class="paragraph"/><h4>Associating OpenIDs with local accounts</h4><p class="paragraph"/>This plugin has two features that address this issues. One is the ability to associate multiple OpenIDs with a user record. Recall that the Core plugin generates a user class that looks like this:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany.yourapp<p class="paragraph"/>class User &#123;<p class="paragraph"/>   <span class="java&#45;object">String</span> username
+   <span class="java&#45;object">String</span> password
+   <span class="java&#45;object">boolean</span> enabled
+   <span class="java&#45;object">boolean</span> accountExpired
+   <span class="java&#45;object">boolean</span> accountLocked
+   <span class="java&#45;object">boolean</span> passwordExpired<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      username blank: <span class="java&#45;keyword">false</span>, unique: <span class="java&#45;keyword">true</span>
+      password blank: <span class="java&#45;keyword">false</span>
+   &#125;<p class="paragraph"/>   Set&#60;Role&#62; getAuthorities() &#123;
+      UserRole.findAllByUser(<span class="java&#45;keyword">this</span>).collect &#123; it.role &#125; as Set
+   &#125;
+&#125;</pre></div><p class="paragraph"/>So to use this plugin you need to add a <code>hasMany</code> for a collection of OpenID domain classes (generated by the <a href="../ref/Scripts/s2-create-openid.html" class="Scripts">s2-create-openid</a> script) used to store OpenIDs:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.yourcompany.yourapp<p class="paragraph"/>class User &#123;<p class="paragraph"/>   <span class="java&#45;object">String</span> username
+   <span class="java&#45;object">String</span> password
+   <span class="java&#45;object">boolean</span> enabled
+   <span class="java&#45;object">boolean</span> accountExpired
+   <span class="java&#45;object">boolean</span> accountLocked
+   <span class="java&#45;object">boolean</span> passwordExpired<p class="paragraph"/>   <span class="java&#45;keyword">static</span> hasMany = &#91;openIds: OpenID&#93;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      username blank: <span class="java&#45;keyword">false</span>, unique: <span class="java&#45;keyword">true</span>
+      password blank: <span class="java&#45;keyword">false</span>
+   &#125;<p class="paragraph"/>   Set&#60;Role&#62; getAuthorities() &#123;
+      UserRole.findAllByUser(<span class="java&#45;keyword">this</span>).collect &#123; it.role &#125; as Set
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Now when an existing user authenticates with OpenID, you can detect that there's no local database with that username and display a page where the user can associate that OpenID with an existing account. Subsequent authentication attempts will use the plugin's enhanced <code>UserDetailsService</code> that looks for a user not just by username but also by OpenID, so OpenID authenticate attempts work fine, and form-based logins do too if they provide the correct password.<p class="paragraph"/><h4>New accounts</h4><p class="paragraph"/>That works for existing accounts, but how do we create these in the first place? When Spring Security throws a <code>UserNotFoundException</code> after a successful OpenID login, the plugin detects that the authentication is a valid OpenID authentication, and if configured to do so (i.e. if <code>grails.plugins.springsecurity.openid.registration.autocreate</code> is <code>true</code>) will redirect the user to a signup page. This way you can guide them through the process of creating an account. This is more efficient than presenting a regular registration workflow because their canonical OpenID for that provider will already be known and can be associated with the user record.<p class="paragraph"/>
+
+
+<h1 id="3. Tutorials">3 Tutorials</h1>
+
+
+
+
+<h2 id="3.1 User registration and linking">3.1 User registration and linking</h2>
+In this tutorial we'll cover
+<ul class="star">
+<li>creating a sample application</li>
+<li>installing the plugin</li>
+<li>configuring the plugin</li>
+<li>using the account linking workflow</li>
+<li>using the registration workflow</li>
+</ul><p class="paragraph"/>First, create a new application:<p class="paragraph"/><pre class="bq"><code>
+$ grails create-app openidtest
+$ cd openidtest</code></pre><p class="paragraph"/>Install the OpenID plugin:
+<pre class="bq"><code>
+$ grails install-plugin spring-security-openid</code></pre><p class="paragraph"/>This will also install the Spring Security Core plugin since it's a dependency of this one.<p class="paragraph"/>Run the <code>s2-quickstart script</code> to initialize the core plugin:
+<pre class="bq"><code>
+$ grails s2-quickstart com.openidtest User Role</code></pre><p class="paragraph"/>Run the <code>s2-init-openid</code> script to initialize the OpenID plugin:
+<pre class="bq"><code>
+$ grails s2-init-openid</code></pre><p class="paragraph"/>To support the remember-me checkbox, run the <code>s2-create-persistent-token</code> script to generate a domain class for persistent tokens:<p class="paragraph"/><pre class="bq"><code>
+$ grails s2-create-persistent-token com.openidtest.PersistentLogin</code></pre><p class="paragraph"/>To support linking one or more OpenIDs with local accounts, we need to create an <code>OpenID</code> domain class:<p class="paragraph"/><pre class="bq"><code>
+$ grails s2-create-openid com.openidtest.OpenID</code></pre><p class="paragraph"/>and edit the generated user class and add a <code>hasMany</code> for an <code>openIds</code> property:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> com.openidtest<p class="paragraph"/>class User &#123;<p class="paragraph"/>   <span class="java&#45;object">String</span> username
+   <span class="java&#45;object">String</span> password
+   <span class="java&#45;object">boolean</span> enabled
+   <span class="java&#45;object">boolean</span> accountExpired
+   <span class="java&#45;object">boolean</span> accountLocked
+   <span class="java&#45;object">boolean</span> passwordExpired<p class="paragraph"/>   <span class="java&#45;keyword">static</span> hasMany = &#91;openIds: OpenID&#93;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> constraints = &#123;
+      username blank: <span class="java&#45;keyword">false</span>, unique: <span class="java&#45;keyword">true</span>
+      password blank: <span class="java&#45;keyword">false</span>
+   &#125;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mapping = &#123;
+      password column: '`password`'
+   &#125;<p class="paragraph"/>   Set&#60;Role&#62; getAuthorities() &#123;
+      UserRole.findAllByUser(<span class="java&#45;keyword">this</span>).collect &#123; it.role &#125; as Set
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Now create some test users and grant them some roles in <code>grails-app/conf/BootStrap.groovy</code>:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> com.openidtest.Role
+<span class="java&#45;keyword">import</span> com.openidtest.User
+<span class="java&#45;keyword">import</span> com.openidtest.UserRole<p class="paragraph"/>class BootStrap &#123;<p class="paragraph"/>   def springSecurityService<p class="paragraph"/>   def init = &#123; servletContext &#45;&#62;
+      // encode the password only <span class="java&#45;keyword">if</span> you're using an older version of the
+      // spring&#45;security&#45;core plugin and you don't have encoding logic in
+      // your <span class="java&#45;quote">"User"</span> domain class:
+      // <span class="java&#45;object">String</span> password = springSecurityService.encodePassword('password')
+      <span class="java&#45;object">String</span> password = 'password'<p class="paragraph"/>      def roleAdmin = <span class="java&#45;keyword">new</span> Role(authority: 'ROLE_ADMIN').save()
+      def roleUser = <span class="java&#45;keyword">new</span> Role(authority: 'ROLE_USER').save()<p class="paragraph"/>      def user = <span class="java&#45;keyword">new</span> User(username: 'user', password: password, enabled: <span class="java&#45;keyword">true</span>).save()
+      def admin = <span class="java&#45;keyword">new</span> User(username: 'admin', password: password, enabled: <span class="java&#45;keyword">true</span>).save()<p class="paragraph"/>      UserRole.create user, roleUser
+      UserRole.create admin, roleUser
+      UserRole.create admin, roleAdmin, <span class="java&#45;keyword">true</span>
+   &#125;
+&#125;</pre></div><p class="paragraph"/>The <code>s2-init-openid</code> script creates an <code>OpenIdController</code> but it'll be more natural to access its <code>createAccount</code> action under /login/ and we also want to use this controllers <code>auth</code> action instead of the core plugin's <code>LoginController.auth</code> since this one supports both OpenID and regular username/password logins, so add mappings in <code>grails-app/conf/UrlMappings.groovy</code> to support these changes:<p class="paragraph"/><div class="code"><pre>class UrlMappings &#123;<p class="paragraph"/>   <span class="java&#45;keyword">static</span> mappings = &#123;<p class="paragraph"/>      <span class="java&#45;quote">"/login/auth"</span> &#123;
+         controller = 'openId'
+         action = 'auth'
+      &#125;
+      <span class="java&#45;quote">"/login/openIdCreateAccount"</span> &#123;
+         controller = 'openId'
+         action = 'createAccount'
+      &#125;<p class="paragraph"/>      <span class="java&#45;quote">"/$controller/$action?/$id?"</span>&#123;
+         constraints &#123;
+            // apply constraints here
+         &#125;
+      &#125;
+      <span class="java&#45;quote">"/"</span>(view:<span class="java&#45;quote">"/index"</span>)
+      <span class="java&#45;quote">"500"</span>(view:'/error')
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Now create a controller that's secured with annotations for testing:<p class="paragraph"/><pre class="bq"><code>
+$ grails create-controller secure</code></pre><p class="paragraph"/>and add this code:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> openidtest<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugins.springsecurity.Secured<p class="paragraph"/>class SecureController &#123;<p class="paragraph"/>   @Secured(&#91;'ROLE_ADMIN'&#93;)
+   def admins = &#123;
+      render 'Logged in with ROLE_ADMIN'
+   &#125;<p class="paragraph"/>   @Secured(&#91;'ROLE_USER'&#93;)
+   def users = &#123;
+      render 'Logged in with ROLE_USER'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>and finally we're ready to run the app:<p class="paragraph"/><pre class="bq"><code>
+$ grails run-app</code></pre><p class="paragraph"/>Navigate to <a href="http://localhost:8080/openidtest/secure/admins" target="blank">http://localhost:8080/openidtest/secure/admins</a> and you should be prompted with the login screen. Leave the Use OpenID checkbox checked and enter a valid OpenID. Don't check the remember-me checkbox yet (it doesn't work with the extended workflows where you create a new user or link an OpenID) and click the "Log in" button.<p class="paragraph"/>After authenticating at the OpenID provider, you'll be redirected to the registration page. Note that there's a link to just associate the current OpenID with a local account - for now click the "link this OpenID" link.<p class="paragraph"/>At the next screen enter the username and password for the user we created in BootStrap with ROLE_ADMIN ('admin'/'password') and you will be redirected to <a href="http://localhost:8080/openidtest/secure/admins" target="blank">http://localhost:8080/openidtest/secure/admins</a><p class="paragraph"/>To test that the OpenID is linked to your account, logout by navigating to <a href="http://localhost:8080/openidtest/logout/" target="blank">http://localhost:8080/openidtest/logout/</a> and navigate to <a href="http://localhost:8080/openidtest/secure/admins" target="blank">http://localhost:8080/openidtest/secure/admins</a>. Logging out removes the remember-me cookie, so authenticate again with your OpenID (this time check the remember-me checkbox) and it should skip the register/link step and go directly to the secured page. You can also repeat the process and switch to the username/password login and use that.<p class="paragraph"/>To test remember-me, close the browser and re-open it, and navigate to <a href="http://localhost:8080/openidtest/secure/admins" target="blank">http://localhost:8080/openidtest/secure/admins</a>. It should skip the authentication step entirely and show the page.<p class="paragraph"/><h4>User Registration</h4><p class="paragraph"/>Now let's create a new user associated with an OpenID. Logout again and navigate to <a href="http://localhost:8080/openidtest/secure/users" target="blank">http://localhost:8080/openidtest/secure/users</a> to initiate a login for a resource that requires ROLE_USER.<p class="paragraph"/>Since you've already associated the previous OpenID with a user, you either need to use a second OpenID, or restart the application to clear out the in-memory database.<p class="paragraph"/>Login using either the new OpenID or the original after restarting, and after authenticating externally you'll be redirected to the registration page. This time create a new user. By default the password validation rules are rather strict and you can change them, but for now enter a password that's at least 8 characters and contains at least one number and at least one symbol (e.g. !, #, $, %, etc.)<p class="paragraph"/>You should be redirected to <a href="http://localhost:8080/openidtest/secure/users" target="blank">http://localhost:8080/openidtest/secure/users</a> after creating the account. Now logout and log back in, both with the username/password for the account you created and the OpenID you linked and both should work.
+
+
+
+<h2 id="3.2 Plain OpenID">3.2 Plain OpenID</h2>
+In the previous tutorial we went through two workflows to allow linking OpenIDs to local accounts. Another option is to only support OpenID logins but not associate them with local accounts. This might be useful if you want to allow people to perform some basic actions like clicking Like and Don't Like buttons, adding comments, etc.<p class="paragraph"/>To support this, rather than showing the registration page when an authenticated OpenID user is redirected to your controller, you could just create an <code>Authentication</code> for them with dummy information. Recall that the minimum requirements to populate a <code>UserDetails</code> instance are the username, the status booleans (enabled, locked out, etc.) and one or more granted authorities. You could emulate a basic application user by using their OpenID as the username, setting all statuses to <code>true</code>, and granting them a virtual role, e.g. <code>ROLE_OPENID</code>.<p class="paragraph"/>Edit the generated <code>grails-app/controllers/OpenIdController.groovy</code> and replace the existing <code>createAccount</code> action with this:<p class="paragraph"/><div class="code"><pre>def createAccount = &#123;<p class="paragraph"/>   def config = SpringSecurityUtils.securityConfig<p class="paragraph"/>   <span class="java&#45;object">String</span> openId = session&#91;OIAFH.LAST_OPENID_USERNAME&#93;
+   <span class="java&#45;keyword">if</span> (!openId) &#123;
+      flash.error = 'Sorry, an OpenID was not found'
+      redirect uri: config.failureHandler.defaultFailureUrl
+      <span class="java&#45;keyword">return</span>
+   &#125;<p class="paragraph"/>   def user = <span class="java&#45;keyword">new</span> GrailsUser(openId, 'password', <span class="java&#45;keyword">true</span>, <span class="java&#45;keyword">true</span>,
+         <span class="java&#45;keyword">true</span>, <span class="java&#45;keyword">true</span>, &#91;<span class="java&#45;keyword">new</span> GrantedAuthorityImpl('ROLE_OPENID')&#93;, 0)<p class="paragraph"/>   SCH.context.authentication = <span class="java&#45;keyword">new</span> UsernamePasswordAuthenticationToken(
+         user, 'password', user.authorities)<p class="paragraph"/>   session.removeAttribute OIAFH.LAST_OPENID_USERNAME
+   session.removeAttribute OIAFH.LAST_OPENID_ATTRIBUTES<p class="paragraph"/>   def savedRequest = session&#91;DefaultSavedRequest.SPRING_SECURITY_SAVED_REQUEST_KEY&#93;
+   <span class="java&#45;keyword">if</span> (savedRequest &#38;&#38; !config.successHandler.alwaysUseDefault) &#123;
+      redirect url: savedRequest.redirectUrl
+   &#125;
+   <span class="java&#45;keyword">else</span> &#123;
+      redirect uri: config.successHandler.defaultTargetUrl
+   &#125;
+&#125;</pre></div><p class="paragraph"/>You'll need to add these imports:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">import</span> org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
+<span class="java&#45;keyword">import</span> org.springframework.security.core.authority.GrantedAuthorityImpl
+<span class="java&#45;keyword">import</span> org.springframework.security.core.context.SecurityContextHolder as SCH</pre></div><p class="paragraph"/>To test this, add a new action to the secure controller that requires the virtual <code>ROLE_OPENID</code> role:<p class="paragraph"/><div class="code"><pre><span class="java&#45;keyword">package</span> openidtest<p class="paragraph"/><span class="java&#45;keyword">import</span> grails.plugins.springsecurity.Secured<p class="paragraph"/>class SecureController &#123;<p class="paragraph"/>   @Secured(&#91;'ROLE_ADMIN'&#93;)
+   def admins = &#123;
+      render 'Logged in with ROLE_ADMIN'
+   &#125;<p class="paragraph"/>   @Secured(&#91;'ROLE_USER'&#93;)
+   def users = &#123;
+      render 'Logged in with ROLE_USER'
+   &#125;<p class="paragraph"/>   @Secured(&#91;'ROLE_OPENID'&#93;)
+   def openid = &#123;
+      render 'Logged in with ROLE_OPENID'
+   &#125;
+&#125;</pre></div><p class="paragraph"/>Then start the server with <code>grails run-app</code> and navigate to <a href="http://localhost:8080/openidtest/secure/openid" target="blank">http://localhost:8080/openidtest/secure/openid</a>, and login using any OpenID. Once you authenticate and get redirected back to your application you should see the text <code>Logged in with ROLE_OPENID</code> indicating that you're logged in as a basic OpenID user.<p class="paragraph"/>Note that since this is a fake role, there's no need to store it in the database since real application users will never be granted ROLE_OPENID.
+
+
+
+<h1 id="4. Configuration">4 Configuration</h1>
+There are a few configuration options for OpenID.<p class="paragraph"/><blockquote class="note">
+All of these property overrides must be specified in <code>grails-app/conf/Config.groovy</code> using the <code>grails.plugins.springsecurity</code> suffix, for example
+<div class="code"><pre>grails.plugins.springsecurity.openid.domainClass =
+     'com.mycompany.myapp.OpenID'</pre></div>
+</blockquote><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>openid.claimedIdentityFieldName</td><td>'openid_identifier'</td><td>the login name form parameter</td></tr><tr class="table-even"><td>openid.nonceMaxSeconds</td><td>300</td><td>maximum life of the generated nonce shared with the OpenID provider; determines how long the authentication is allowed to take</td></tr><tr class="table-odd"><td>openid.domainClass</td><td>'OpenID'</td><td>the full class name of the many-to-one OpenID domain class</td></tr><tr class="table-even"><td>openid.encodePassword</td><td><code>false</code></td><td>whether to encode the password in OpenIdController.createNewAccount (set to <code>true</code> if not using the new style of User domain class that auto-encrypts)</td></tr><tr class="table-odd"><td>openid.registration.autocreate</td><td><code>true</code></td><td>if <code>true</code> will redirect valid OpenID authentications to the create and link user workflows, otherwise shows the standard login fail page</td></tr><tr class="table-even"><td>openid.registration.requiredAttributes</td><td>none</td><td>required Attribute Exchange attributes</td></tr><tr class="table-odd"><td>openid.registration.optionalAttributes</td><td>&#91;email&#58; 'http://schema.openid.net/contact/email'&#93;</td><td>optional Attribute Exchange attributes</td></tr><tr class="table-even"><td>openid.registration.createAccountUri</td><td>'/login/openIdCreateAccount'</td><td>redirect address used when <code>openid.registration.autocreate</code> is <code>true</code></td></tr><tr class="table-odd"><td>openid.registration.roleNames</td><td>&#91;'ROLE_USER'&#93;</td><td>a list of names of roles to grant to users who self-register after an OpenID authentication; the roles must already exist</td></tr><tr class="table-even"><td>openid.userLookup.openIdsPropertyName</td><td>'openIds'</td><td>the name of the property in the user class for the OpenID domain class collection</td></tr></table>
+
+
+
+<h1 id="5. Attribute Exchange">5 Attribute Exchange</h1>
+TBD<p class="paragraph"/>
+
+                    </div>
+                </td>
+                <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                        
+                        <div class="menu-item"><a href="../ref/Scripts/s2-create-openid.html">s2-create-openid</a>
+                        </div>
+                        
+                        <div class="menu-item"><a href="../ref/Scripts/s2-init-openid.html">s2-init-openid</a>
+                        </div>
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+            </tr>
+        </table>
+
+        <div id="footer">
+            
+            
+        </div>
+
+
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+    
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>

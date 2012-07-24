@@ -5,4 +5,3 @@ cobertura.ser
 *.zip
 /testapps.config.groovy
 /.settings/
-/docs/
