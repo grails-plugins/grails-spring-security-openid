@@ -1,68 +1,23 @@
 <head>
+<meta name='layout' content='main'/>
 <title>Login</title>
-<style type='text/css' media='screen'>
-body {
-	background: #202020;
-	font-family: Arial;
-}
+<!-- Simple OpenID Selector -->
+<link rel="stylesheet" href="${resource(dir:'css',file:'openid.css')}" />
+<g:javascript library="prototype" />
+<g:javascript src="openid-prototype.js" />
+<g:javascript src="openid-en.js" />
 
-div.openid-loginbox {
-	width: 450px;
-	margin-left: auto;
-	margin-right: auto;
-	background: white;
-	padding: 15px;
-}
-
-.openid-loginbox-inner {
-	width: 450px;
-	border: 1px blue solid;
-}
-
-td.openid-loginbox-title {
-	background: #e0e0ff;
-	border-bottom: 1px #c0c0ff solid;
-	padding: 0;
-}
-
-td.openid-loginbox-title table {
-	width: 100%;
-	font-size: 18px;
-}
-.openid-loginbox-useopenid {
-	font-weight: normal;
-	font-size: 14px;
-}
-td.openid-loginbox-title img {
-	border: 0;
-	vertical-align: middle;
-	padding-right: 3px;
-}
-table.openid-loginbox-userpass {
-	margin: 3px 3px 3px 8px;
-}
-table.openid-loginbox-userpass td {
-	height: 25px;
-}
-input.openid-identifier {
-	background: url(http://stat.livejournal.com/img/openid-inputicon.gif) no-repeat;
-	background-color: #fff;
-	background-position: 0 50%;
-	padding-left: 18px;
-}
-
-input[type='text'],input[type='password'] {
-	font-size: 16px;
-	width: 310px;
-}
-input[type='submit'] {
-	font-size: 14px;
-}
-
-td.openid-submit {
-	padding: 3px;
-}
-
+<!-- /Simple OpenID Selector -->
+<style type="text/css">
+	/* Basic page formatting */
+	body {
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
+    
+    #openid-input {
+        width: 580px;
+    } 
+	
 </style>
 </head>
 
@@ -90,29 +45,35 @@ td.openid-submit {
 		</tr>
 		<tr>
 			<td>
-
 			<div id='openidLogin'>
-				<form action='${openIdPostUrl}' method='POST' autocomplete='off' name='openIdLoginForm'>
-				<table class="openid-loginbox-userpass">
-					<tr>
-						<td>OpenID:</td>
-						<td><input type="text" name="${openidIdentifier}" class="openid-identifier"/></td>
-					</tr>
-					<g:if test='${persistentRememberMe}'>
-					<tr>
-						<td><label for='remember_me'>Remember me</label></td>
-						<td>
-							<input type='checkbox' name='${rememberMeParameter}' id='remember_me'/>
-						</td>
-					</tr>
-					</g:if>
-					<tr>
-						<td colspan='2' class="openid-submit" align="center">
-							<input type="submit" value="Log in" />
-						</td>
-					</tr>
-				</table>
-				</form>
+                <form action='${openIdPostUrl}' method='POST' autocomplete='off' id="openid_form" name='openIdLoginForm'>                                             
+            		<input type="hidden" name="action" value="verify" />
+            		<div id="openid_choice">
+            			<div id="openid_btns"></div>
+            		</div>
+            		<div id="openid_input_area">
+            			<input id="openid_identifier" name="openid_identifier" class="openid-identifier" type="text" value="http://" />
+            			<input id="openid_submit" type="submit" value="Sign-In"/>
+            		</div>
+            		<noscript>
+            			<p>OpenID is service that allows you to log-on to many different websites using a 
+            			    single indentity. Find out <a href="http://openid.net/what/">more about 
+            			    OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID 
+            			    enabled account</a>.
+            			</p>
+            		</noscript>
+            		<table>
+            	        <tr>
+            	            <td valign="bottom">	
+            	                <input id="openid-input" name="${openidIdentifier}" type="text" value="" />
+                            </td>
+                            <td>&nbsp;</td>
+                            <td valign="bottom">
+                                <input type="submit" value="Sign-In" last="true" />
+                            </td>
+                        </tr>
+                    </table>
+            	</form>
 			</div>
 
 			<div id='formLogin' style='display: none'>
@@ -148,20 +109,22 @@ td.openid-submit {
 
 <script>
 
-(function() { document.forms['openIdLoginForm'].elements['openid_identifier'].focus(); })();
+openid.init('openid-input');
 
-var openid = true;
+(function() { document.forms['openid_form'].elements['openid-input'].focus(); })();
+
+var openidSelected = true;
 
 function toggleForms() {
-	if (openid) {
-		document.getElementById('openidLogin').style.display = 'none';
+	if (openidSelected) {
+		document.getElementById('openid_form').style.display = 'none';
 		document.getElementById('formLogin').style.display = '';
 	}
 	else {
-		document.getElementById('openidLogin').style.display = '';
+		document.getElementById('openid_form').style.display = '';
 		document.getElementById('formLogin').style.display = 'none';
 	}
-	openid = !openid;
+	openidSelected = !openidSelected;
 }
 </script>
 </body>
