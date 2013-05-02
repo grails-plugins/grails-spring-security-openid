@@ -12,6 +12,7 @@ grails.project.dependency.resolution = {
 		mavenLocal()
 		mavenCentral()
 		mavenRepo 'http://guice-maven.googlecode.com/svn/trunk'
+		mavenRepo 'http://mvnrepository.com/artifact'
 	}
 
 	dependencies {
