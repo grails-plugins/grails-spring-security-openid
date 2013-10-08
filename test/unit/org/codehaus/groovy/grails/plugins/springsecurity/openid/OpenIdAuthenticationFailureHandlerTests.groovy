@@ -14,8 +14,10 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
-import org.codehaus.groovy.grails.plugins.springsecurity.ReflectionUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.ReflectionUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.web.SecurityRequestHolder;
+
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.security.authentication.AccountExpiredException
@@ -36,7 +38,9 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	private static final String AJAX_REDIRECT = '/ajaxAuthenticationFailureUrl'
 	private static final String STANDARD_REDIRECT = '/defaultFailureUrl'
 
-	private _handler = new OpenIdAuthenticationFailureHandler()
+	private OpenIdAuthenticationFailureHandler handler = new OpenIdAuthenticationFailureHandler()
+	private response = new MockHttpServletResponse()
+	private request = new MockHttpServletRequest()
 
 	/**
 	 * {@inheritDoc}
@@ -45,28 +49,24 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	@Override
 	protected void setUp() {
 		super.setUp()
+		SecurityRequestHolder.set request, response
 		ReflectionUtils.application = new FakeApplication()
 		ReflectionUtils.setConfigProperty 'openid.registration.autocreate', true
 		ReflectionUtils.setConfigProperty 'ajaxHeader', 'ajaxHeader'
 		ReflectionUtils.setConfigProperty 'openid.registration.createAccountUri', OPENID_REDIRECT
-		_handler.defaultFailureUrl = STANDARD_REDIRECT
-		_handler.ajaxAuthenticationFailureUrl = AJAX_REDIRECT
+		handler.defaultFailureUrl = STANDARD_REDIRECT
+		handler.ajaxAuthenticationFailureUrl = AJAX_REDIRECT
 	}
 
 	void testOnAuthenticationFailure_NotUsernameNotFound() {
-		def response = new MockHttpServletResponse()
 
-		_handler.onAuthenticationFailure new MockHttpServletRequest(),
-			response, new AccountExpiredException('expired')
+		handler.onAuthenticationFailure request, response, new AccountExpiredException('expired')
 
 		assertEquals STANDARD_REDIRECT, response.redirectedUrl
 	}
 
 	void testOnAuthenticationFailure_NotOpenId() {
-		def response = new MockHttpServletResponse()
-
-		_handler.onAuthenticationFailure new MockHttpServletRequest(),
-			response, new UsernameNotFoundException('expired')
+		handler.onAuthenticationFailure request, response, new UsernameNotFoundException('expired')
 
 		assertEquals STANDARD_REDIRECT, response.redirectedUrl
 	}
@@ -74,9 +74,8 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	void testOnAuthenticationFailure_NotOpenIdSuccess() {
 		def e = new UsernameNotFoundException('expired')
 		e.authentication = new OpenIDAuthenticationToken(OpenIDAuthenticationStatus.FAILURE, "", "", [])
-		def response = new MockHttpServletResponse()
 
-		_handler.onAuthenticationFailure new MockHttpServletRequest(), response, e
+		handler.onAuthenticationFailure request, response, e
 
 		assertEquals STANDARD_REDIRECT, response.redirectedUrl
 	}
@@ -85,9 +84,8 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 		ReflectionUtils.setConfigProperty 'openid.registration.autocreate', false
 		def e = new UsernameNotFoundException('expired')
 		e.authentication = new OpenIDAuthenticationToken(OpenIDAuthenticationStatus.SUCCESS, "", "", [])
-		def response = new MockHttpServletResponse()
 
-		_handler.onAuthenticationFailure new MockHttpServletRequest(), response, e
+		handler.onAuthenticationFailure request, response, e
 
 		assertEquals STANDARD_REDIRECT, response.redirectedUrl
 	}
@@ -98,10 +96,8 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 		e.authentication = new OpenIDAuthenticationToken(
 				OpenIDAuthenticationStatus.SUCCESS, openId, '',
 				[new OpenIDAttribute('email', 'type', ['foo@bar.com'])])
-		def response = new MockHttpServletResponse()
-		def request = new MockHttpServletRequest()
 
-		_handler.onAuthenticationFailure request, response, e
+		handler.onAuthenticationFailure request, response, e
 
 		assertEquals OPENID_REDIRECT, response.redirectedUrl
 		assertEquals openId, request.session.getAttribute(OpenIdAuthenticationFailureHandler.LAST_OPENID_USERNAME)

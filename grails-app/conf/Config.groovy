@@ -1,7 +1,7 @@
 // for testing only, not included in plugin zip
 
 grails {
-	plugins {
+	plugin {
 		springsecurity {
 			userLookup {
 				userDomainClassName = 'test.TestUser'

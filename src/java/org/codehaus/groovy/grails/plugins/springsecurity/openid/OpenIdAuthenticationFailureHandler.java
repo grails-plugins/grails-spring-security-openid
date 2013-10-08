@@ -14,6 +14,9 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.openid;
 
+import grails.plugin.springsecurity.ReflectionUtils;
+import grails.plugin.springsecurity.web.authentication.AjaxAwareAuthenticationFailureHandler;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.codehaus.groovy.grails.plugins.springsecurity.AjaxAwareAuthenticationFailureHandler;
-import org.codehaus.groovy.grails.plugins.springsecurity.ReflectionUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

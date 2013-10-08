@@ -14,8 +14,9 @@
  */
 package org.codehaus.groovy.grails.plugins.springsecurity.openid
 
-import org.codehaus.groovy.grails.plugins.springsecurity.GormUserDetailsService
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.userdetails.GormUserDetailsService
+
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
