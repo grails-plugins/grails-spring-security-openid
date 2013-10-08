@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.springsecurity.openid;
+package grails.plugin.springsecurity.openid;
 
 import grails.plugin.springsecurity.ReflectionUtils;
 import grails.plugin.springsecurity.web.authentication.AjaxAwareAuthenticationFailureHandler;

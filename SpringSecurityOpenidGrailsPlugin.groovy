@@ -14,10 +14,10 @@
  */
 import grails.plugin.springsecurity.SecurityFilterPosition
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.openid.OpenIdAuthenticationFailureHandler
+import grails.plugin.springsecurity.openid.userdetails.OpenIdUserDetailsService
 import grails.plugin.springsecurity.web.authentication.NullLogoutHandlerRememberMeServices
 
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdAuthenticationFailureHandler
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdUserDetailsService
 import org.openid4java.consumer.ConsumerManager
 import org.openid4java.consumer.InMemoryNonceVerifier
 import org.springframework.security.openid.OpenID4JavaConsumer
