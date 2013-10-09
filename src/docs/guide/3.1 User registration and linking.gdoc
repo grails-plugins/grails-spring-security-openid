@@ -11,19 +11,20 @@ bc.
 $ grails create-app openidtest
 $ cd openidtest
 
-Install the OpenID plugin:
-bc.
-$ grails install-plugin spring-security-openid
+Install the OpenID plugin by adding a dependency in BuildConfig.groovy:
+
+{code}
+plugins {
+   ...
+   runtime ':spring-security-openid:2.0-RC1'
+}
+{code}
 
 This will also install the Spring Security Core plugin since it's a dependency of this one.
 
 Run the @s2-quickstart script@ to initialize the core plugin:
 bc.
 $ grails s2-quickstart com.openidtest User Role
-
-Run the @s2-init-openid@ script to initialize the OpenID plugin:
-bc.
-$ grails s2-init-openid
 
 To support the remember-me checkbox, run the @s2-create-persistent-token@ script to generate a domain class for persistent tokens:
 
@@ -42,14 +43,18 @@ package com.openidtest
 
 class User {
 
+   transient springSecurityService
+
    String username
    String password
-   boolean enabled
+   boolean enabled = true
    boolean accountExpired
    boolean accountLocked
    boolean passwordExpired
 
    static hasMany = [openIds: OpenID]
+
+   static transients = ['springSecurityService']
 
    static constraints = {
       username blank: false, unique: true
@@ -63,6 +68,20 @@ class User {
    Set<Role> getAuthorities() {
       UserRole.findAllByUser(this).collect { it.role } as Set
    }
+
+   def beforeInsert() {
+      encodePassword()
+   }
+
+   def beforeUpdate() {
+      if (isDirty('password')) {
+         encodePassword()
+      }
+   }
+
+   protected void encodePassword() {
+      password = springSecurityService.encodePassword(password)
+   }
 }
 {code}
 
@@ -75,20 +94,12 @@ import com.openidtest.UserRole
 
 class BootStrap {
 
-   def springSecurityService
-
    def init = { servletContext ->
-      // encode the password only if you're using an older version of the
-      // spring-security-core plugin and you don't have encoding logic in
-      // your "User" domain class:
-      // String password = springSecurityService.encodePassword('password')
-      String password = 'password'
-
       def roleAdmin = new Role(authority: 'ROLE_ADMIN').save()
       def roleUser = new Role(authority: 'ROLE_USER').save()
 
-      def user = new User(username: 'user', password: password, enabled: true).save()
-      def admin = new User(username: 'admin', password: password, enabled: true).save()
+      def user = new User(username: 'user', password: 'password', enabled: true).save()
+      def admin = new User(username: 'admin', password: 'password', enabled: true).save()
 
       UserRole.create user, roleUser
       UserRole.create admin, roleUser
@@ -97,7 +108,7 @@ class BootStrap {
 }
 {code}
 
-The @s2-init-openid@ script creates an @OpenIdController@ but it'll be more natural to access its @createAccount@ action under /login/ and we also want to use this controllers @auth@ action instead of the core plugin's @LoginController.auth@ since this one supports both OpenID and regular username/password logins, so add mappings in @grails-app/conf/UrlMappings.groovy@ to support these changes:
+The plugin contains an @OpenIdController@ but it'll be more natural to access its @createAccount@ action under /login/ and we also want to use this controller's @auth@ action instead of the core plugin's @LoginController.auth@ since this one supports both OpenID and regular username/password logins, so add mappings in @grails-app/conf/UrlMappings.groovy@ to support these changes:
 
 {code}
 class UrlMappings {
@@ -113,13 +124,8 @@ class UrlMappings {
          action = 'createAccount'
       }
 
-      "/$controller/$action?/$id?"{
-         constraints {
-            // apply constraints here
-         }
-      }
-      "/"(view:"/index")
-      "500"(view:'/error')
+      ...
+
    }
 }
 {code}
@@ -134,17 +140,17 @@ and add this code:
 {code}
 package openidtest
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 class SecureController {
 
    @Secured(['ROLE_ADMIN'])
-   def admins = {
+   def admins() {
       render 'Logged in with ROLE_ADMIN'
    }
 
    @Secured(['ROLE_USER'])
-   def users = {
+   def users() {
       render 'Logged in with ROLE_USER'
    }
 }

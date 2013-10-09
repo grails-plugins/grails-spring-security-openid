@@ -11,20 +11,42 @@ package com.yourcompany.yourapp
 
 class User {
 
+   transient springSecurityService
+
    String username
    String password
-   boolean enabled
+   boolean enabled = true
    boolean accountExpired
    boolean accountLocked
    boolean passwordExpired
+
+   static transients = ['springSecurityService']
 
    static constraints = {
       username blank: false, unique: true
       password blank: false
    }
 
+   static mapping = {
+      password column: '`password`'
+   }
+
    Set<Role> getAuthorities() {
       UserRole.findAllByUser(this).collect { it.role } as Set
+   }
+
+   def beforeInsert() {
+      encodePassword()
+   }
+
+   def beforeUpdate() {
+      if (isDirty('password')) {
+         encodePassword()
+      }
+   }
+
+   protected void encodePassword() {
+      password = springSecurityService.encodePassword(password)
    }
 }
 {code}
@@ -36,22 +58,44 @@ package com.yourcompany.yourapp
 
 class User {
 
+   transient springSecurityService
+
    String username
    String password
-   boolean enabled
+   boolean enabled = true
    boolean accountExpired
    boolean accountLocked
    boolean passwordExpired
 
    static hasMany = [openIds: OpenID]
 
+   static transients = ['springSecurityService']
+
    static constraints = {
       username blank: false, unique: true
       password blank: false
    }
 
+   static mapping = {
+      password column: '`password`'
+   }
+
    Set<Role> getAuthorities() {
       UserRole.findAllByUser(this).collect { it.role } as Set
+   }
+
+   def beforeInsert() {
+      encodePassword()
+   }
+
+   def beforeUpdate() {
+      if (isDirty('password')) {
+         encodePassword()
+      }
+   }
+
+   protected void encodePassword() {
+      password = springSecurityService.encodePassword(password)
    }
 }
 {code}
@@ -60,5 +104,5 @@ Now when an existing user authenticates with OpenID, you can detect that there's
 
 h4. New accounts
 
-That works for existing accounts, but how do we create these in the first place? When Spring Security throws a @UserNotFoundException@ after a successful OpenID login, the plugin detects that the authentication is a valid OpenID authentication, and if configured to do so (i.e. if @grails.plugins.springsecurity.openid.registration.autocreate@ is @true@) will redirect the user to a signup page. This way you can guide them through the process of creating an account. This is more efficient than presenting a regular registration workflow because their canonical OpenID for that provider will already be known and can be associated with the user record.
+That works for existing accounts, but how do we create these in the first place? When Spring Security throws a @UserNotFoundException@ after a successful OpenID login, the plugin detects that the authentication is a valid OpenID authentication, and if configured to do so (i.e. if @grails.plugin.springsecurity.openid.registration.autocreate@ is @true@) will redirect the user to a signup page. This way you can guide them through the process of creating an account. This is more efficient than presenting a regular registration workflow because their canonical OpenID for that provider will already be known and can be associated with the user record.
 

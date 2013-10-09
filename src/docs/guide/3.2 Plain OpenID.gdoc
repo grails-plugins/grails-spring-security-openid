@@ -2,14 +2,14 @@ In the previous tutorial we went through two workflows to allow linking OpenIDs 
 
 To support this, rather than showing the registration page when an authenticated OpenID user is redirected to your controller, you could just create an @Authentication@ for them with dummy information. Recall that the minimum requirements to populate a @UserDetails@ instance are the username, the status booleans (enabled, locked out, etc.) and one or more granted authorities. You could emulate a basic application user by using their OpenID as the username, setting all statuses to @true@, and granting them a virtual role, e.g. @ROLE_OPENID@.
 
-Edit the generated @grails-app/controllers/OpenIdController.groovy@ and replace the existing @createAccount@ action with this:
+Copy the plugin's @grails.plugin.springsecurity.openid.OpenIdController.groovy@ to your application's grails-app/controllers directory and replace the existing @createAccount@ action with this:
 
 {code}
-def createAccount = {
+def createAccount() {
 
    def config = SpringSecurityUtils.securityConfig
 
-   String openId = session[OIAFH.LAST_OPENID_USERNAME]
+   String openId = session[OpenIdAuthenticationFailureHandler.LAST_OPENID_USERNAME]
    if (!openId) {
       flash.error = 'Sorry, an OpenID was not found'
       redirect uri: config.failureHandler.defaultFailureUrl
@@ -17,15 +17,15 @@ def createAccount = {
    }
 
    def user = new GrailsUser(openId, 'password', true, true,
-         true, true, [new GrantedAuthorityImpl('ROLE_OPENID')], 0)
+         true, true, [new SimpleGrantedAuthority('ROLE_OPENID')], 0)
 
    SCH.context.authentication = new UsernamePasswordAuthenticationToken(
          user, 'password', user.authorities)
 
-   session.removeAttribute OIAFH.LAST_OPENID_USERNAME
-   session.removeAttribute OIAFH.LAST_OPENID_ATTRIBUTES
+   session.removeAttribute OpenIdAuthenticationFailureHandler.LAST_OPENID_USERNAME
+   session.removeAttribute OpenIdAuthenticationFailureHandler.LAST_OPENID_ATTRIBUTES
 
-   def savedRequest = session[DefaultSavedRequest.SPRING_SECURITY_SAVED_REQUEST_KEY]
+   def savedRequest = requestCache.getRequest(request, response)
    if (savedRequest && !config.successHandler.alwaysUseDefault) {
       redirect url: savedRequest.redirectUrl
    }
@@ -38,8 +38,8 @@ def createAccount = {
 You'll need to add these imports:
 
 {code}
-import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
-import org.springframework.security.core.authority.GrantedAuthorityImpl
+import grails.plugin.springsecurity.userdetails.GrailsUser
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 {code}
 
@@ -48,22 +48,22 @@ To test this, add a new action to the secure controller that requires the virtua
 {code}
 package openidtest
 
-import grails.plugins.springsecurity.Secured
+import grails.plugin.springsecurity.annotation.Secured
 
 class SecureController {
 
    @Secured(['ROLE_ADMIN'])
-   def admins = {
+   def admins() {
       render 'Logged in with ROLE_ADMIN'
    }
 
    @Secured(['ROLE_USER'])
-   def users = {
+   def users() {
       render 'Logged in with ROLE_USER'
    }
 
    @Secured(['ROLE_OPENID'])
-   def openid = {
+   def openid() {
       render 'Logged in with ROLE_OPENID'
    }
 }
