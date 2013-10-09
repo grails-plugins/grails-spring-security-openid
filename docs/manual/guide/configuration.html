@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>4 Configuration 2.0-RC1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction to the Spring Security OpenID Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/tutorials.html"><strong>3</strong><span>Tutorials</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>4</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/attributeExchange.html"><strong>5</strong><span>Attribute Exchange</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>OpenID authentication support for the Spring Security plugin.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/tutorials.html">&lt;&lt; <strong>3</strong><span>Tutorials</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/attributeExchange.html"><strong>5</strong><span>Attribute Exchange</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>4 Configuration - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 2.0-RC1</p>
+
+                    
+                </div>
+
+                
+
+                
+
+<h1 id="configuration">4 Configuration</h1>
+There are a few configuration options for OpenID.<p class="paragraph"/><blockquote class="note">
+All of these property overrides must be specified in <code>grails-app/conf/Config.groovy</code> using the <code>grails.plugin.springsecurity</code> suffix, for example
+<div class="code"><pre>grails.plugin.springsecurity.openid.domainClass =
+     'com.mycompany.myapp.OpenID'</pre></div>
+</blockquote><p class="paragraph"/><table class="wiki-table" cellpadding="0" cellspacing="0" border="0"><tr><th><strong class="bold">Name</strong></th><th><strong class="bold">Default</strong></th><th><strong class="bold">Meaning</strong></th></tr><tr class="table-odd"><td>openid.claimedIdentity FieldName</td><td>'openid_identifier'</td><td>the login name form parameter</td></tr><tr class="table-even"><td>openid.nonceMaxSeconds</td><td>300</td><td>maximum life of the generated nonce shared with the OpenID provider; determines how long the authentication is allowed to take</td></tr><tr class="table-odd"><td>openid.domainClass</td><td>'OpenID'</td><td>the full class name of the many-to-one OpenID domain class</td></tr><tr class="table-even"><td>openid.encodePassword</td><td><code>false</code></td><td>whether to encode the password in OpenIdController.createNewAccount (set to <code>true</code> if not using the new style of User domain class that auto-encrypts)</td></tr><tr class="table-odd"><td>openid.registration. autocreate</td><td><code>true</code></td><td>if <code>true</code> will redirect valid OpenID authentications to the create and link user workflows, otherwise shows the standard login fail page</td></tr><tr class="table-even"><td>openid.registration. requiredAttributes</td><td>none</td><td>required Attribute Exchange attributes</td></tr><tr class="table-odd"><td>openid.registration. optionalAttributes</td><td>&#91;email&#58; 'http://schema.openid.net/ contact/email'&#93;</td><td>optional Attribute Exchange attributes</td></tr><tr class="table-even"><td>openid.registration. createAccountUri</td><td>'/login/openIdCreateAccount'</td><td>redirect address used when <code>openid.registration.autocreate</code> is <code>true</code></td></tr><tr class="table-odd"><td>openid.registration. roleNames</td><td>&#91;'ROLE_USER'&#93;</td><td>a list of names of roles to grant to users who self-register after an OpenID authentication; the roles must already exist</td></tr><tr class="table-even"><td>openid.userLookup. openIdsPropertyName</td><td>'openIds'</td><td>the name of the property in the user class for the OpenID domain class collection</td></tr></table>
+
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/tutorials.html">&lt;&lt; <strong>3</strong><span>Tutorials</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/attributeExchange.html"><strong>5</strong><span>Attribute Exchange</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Scripts/s2-create-openid.html">s2-create-openid</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>1 Introduction to the Spring Security OpenID Plugin 2.0-RC1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <ul>
+        <li>
+            <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                <a href="../guide/index.html" class="button">Table of contents</a>
+
+                <div id="nav-summary-childs" style="display:none;">
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction to the Spring Security OpenID Plugin</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/tutorials.html"><strong>3</strong><span>Tutorials</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/configuration.html"><strong>4</strong><span>Configuration</span></a>
+                    </div>
+                    
+                    <div class="toc-item" style="margin-left:0"><a href="../guide/attributeExchange.html"><strong>5</strong><span>Attribute Exchange</span></a>
+                    </div>
+                    
+                </div>
+            </div>
+        </li>
+        <li class="separator selected">
+            <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+        </li>
+    </ul>
+</div>
+<div id="header">
+    <div class="images clearfix">
+        
+        
+    </div>
+    <p>OpenID authentication support for the Spring Security plugin.</p>
+</div>
+
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>1 Introduction to the Spring Security OpenID Plugin - Reference Documentation</h1>
+
+                    <p><strong>Authors:</strong> Burt Beckwith</p>
+
+                    <p><strong>Version:</strong> 2.0-RC1</p>
+
+                    
+                </div>
+
+                
+                <div id="table-of-content">
+                    <h2>Table of Contents</h2>
+                    
+                    <div class="toc-item" style="margin-left:0px"><a href="#history"><strong>1.1</strong><span>History</span></a>
+                    </div>
+                    
+                </div>
+                
+
+                
+
+<h1 id="introduction">1 Introduction to the Spring Security OpenID Plugin</h1>
+The OpenID plugin adds <a href="http://en.wikipedia.org/wiki/OpenID" target="blank">OpenID</a> login support to a Grails application that uses Spring Security. It depends on the <a href="http://grails.org/plugin/spring-security-core" target="blank">Spring Security Core plugin</a>.<p class="paragraph"/>Using OpenID authentication frees you from having to maintain passwords for those users, but it also poses some challenges.<p class="paragraph"/>In a typical application that uses form-based logins with Spring Security, all of your user information is stored in the database. Since an OpenID user authenticates at an OpenID provider, you don't maintain their password but Spring Security needs information to populate an <a href="http://static.springsource.org/spring-security/site/docs/3.0.x/apidocs/org/springframework/security/core/Authentication.html" target="blank">Authentication</a> - username, roles, and account statuses (enabled, locked, etc.) Only the username is available from the OpenID login (plus optionally some attributes made available by <a href="http://openid.net/specs/openid-attribute-exchange-1_0.html" target="blank">Attribute Exchange</a>), and the rest is provided by your application, usually from the database.<p class="paragraph"/>The plugin supports two workflows to integrate OpenID authentication with local user accounts. One is user registration, and the other is linking one or more OpenIDs with a valid local account. Both workflows are triggered by a successful OpenID authentication followed by a <code>UsernameNotFoundException</code> indicating that a local user wasn't found. The plugin provides basic implementations of both workflows but each application is different, so you'll most likely need to customize and extend the initial implementation.
+
+
+
+<h2 id="history">1.1 History</h2>
+<ul class="star">
+<li>Version 2.0-RC1</li>
+<ul class="star">
+<li>released October 08, 2013</li>
+</ul>
+<li>Version 1.0.4</li>
+<ul class="star">
+<li>released July 24, 2012</li>
+</ul>
+<li>Version 1.0.3</li>
+<ul class="star">
+<li>released July 31, 2011</li>
+</ul>
+<li>Version 1.0.2</li>
+<ul class="star">
+<li>released March 27, 2011</li>
+</ul>
+<li>Version 1.0.1</li>
+<ul class="star">
+<li>released February 13, 2011</li>
+</ul>
+<li>Version 1.0</li>
+<ul class="star">
+<li>released July 27, 2010</li>
+</ul>
+<li>Version 0.1.1</li>
+<ul class="star">
+<li>released May 12, 2010</li>
+</ul>
+<li>Version 0.1</li>
+<ul class="star">
+<li>released May 03, 2010</li>
+</ul></ul><p class="paragraph"/>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/usage.html"><strong>2</strong><span>Usage</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                    <div class="menu-block"><h1 class="menu-title" onclick="toggleRef(this.parentNode.childNodes[1])">Scripts</h1><div class="menu-sub">
+                        
+                            
+                            <div class="menu-item"><a href="../ref/Scripts/s2-create-openid.html">s2-create-openid</a>
+                            </div>
+                            
+                            </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-16219500-1']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	})();
+</script>
+</body>
+</html>
