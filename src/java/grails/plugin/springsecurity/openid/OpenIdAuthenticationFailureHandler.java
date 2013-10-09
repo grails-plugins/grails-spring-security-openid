@@ -74,7 +74,7 @@ public class OpenIdAuthenticationFailureHandler extends AjaxAwareAuthenticationF
 		getRedirectStrategy().sendRedirect(request, response, createAccountUri);
 	}
 
-	private boolean isSuccessfulLoginUnknownUser(AuthenticationException exception) {
+	protected boolean isSuccessfulLoginUnknownUser(AuthenticationException exception) {
 		if (!(exception instanceof UsernameNotFoundException)) {
 			return false;
 		}
@@ -88,7 +88,7 @@ public class OpenIdAuthenticationFailureHandler extends AjaxAwareAuthenticationF
 				((OpenIDAuthenticationToken)authentication).getStatus());
 	}
 
-	private List<OpenIDAttribute> extractAttrsWithValues(final OpenIDAuthenticationToken authentication) {
+	protected List<OpenIDAttribute> extractAttrsWithValues(final OpenIDAuthenticationToken authentication) {
 		List<OpenIDAttribute> attributes = new ArrayList<OpenIDAttribute>();
 		for (OpenIDAttribute attr : authentication.getAttributes()) {
 			if (attr.getValues() == null || attr.getValues().isEmpty()) {

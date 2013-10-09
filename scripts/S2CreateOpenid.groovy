@@ -12,9 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import grails.util.GrailsNameUtils
 
-includeTargets << new File("$springSecurityOpenidPluginDir/scripts/_OpenIdCommon.groovy")
+includeTargets << new File(springSecurityOpenidPluginDir, "scripts/_OpenIdCommon.groovy")
 
 USAGE = """
 	Usage: grails s2-create-openid <domain-class-name>
@@ -53,8 +52,7 @@ private void configure() {
 		packageDeclaration = "package $packageName"
 	}
 
-	def SpringSecurityUtils = classLoader.loadClass(
-		'org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils')
+	def SpringSecurityUtils = classLoader.loadClass('grails.plugin.springsecurity.SpringSecurityUtils')
 	def conf = SpringSecurityUtils.securityConfig
 
 	String userClassFullName = conf.userLookup.userDomainClassName
@@ -74,7 +72,6 @@ private void configure() {
 	                      packageDeclaration: packageDeclaration,
 	                      className: className,
 	                      userImport: userImport,
-	                      userPropertyName: GrailsNameUtils.getPropertyName(userClassName),
 	                      userClassName: userClassName]
 }
 
@@ -82,7 +79,7 @@ private void updateConfig() {
 	def configFile = new File(appDir, 'conf/Config.groovy')
 	if (configFile.exists()) {
 		configFile.withWriterAppend {
-			it.writeLine "\ngrails.plugins.springsecurity.openid.domainClass = '$templateAttributes.fullClassName'"
+			it.writeLine "\ngrails.plugin.springsecurity.openid.domainClass = '$templateAttributes.fullClassName'"
 		}
 	}
 }

@@ -22,7 +22,7 @@ security {
 
 		nonceMaxSeconds = 300
 
-		domainClass = 'OpenID'
+		domainClass = null // must be set
 
 		registration {
 			autocreate = true

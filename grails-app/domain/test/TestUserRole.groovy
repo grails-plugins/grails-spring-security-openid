@@ -57,10 +57,10 @@ class TestUserRole implements Serializable {
 			user == TestUser.load(u.id) &&
 			role == TestRole.load(r.id)
 		}.deleteAll()
-		
+
 		rowCount > 0
 	}
-		
+
 	static void removeAll(TestUser u) {
 		TestUserRole.where { user == TestUser.load(u.id) }.deleteAll()
 	}
