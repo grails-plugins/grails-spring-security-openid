@@ -1,3 +1,4 @@
+<html>
 <head>
 <meta name='layout' content='main'/>
 <title>Link Account</title>
@@ -58,3 +59,4 @@
 </script>
 
 </body>
+</html>

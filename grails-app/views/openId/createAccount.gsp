@@ -1,3 +1,4 @@
+<html>
 <head>
 <meta name='layout' content='main'/>
 <title>Create Account</title>
@@ -57,3 +58,4 @@
 </div>
 
 </body>
+</html>

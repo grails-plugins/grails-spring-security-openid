@@ -1,3 +1,4 @@
+<html>
 <head>
 <title>Login</title>
 <style type='text/css' media='screen'>
@@ -165,3 +166,4 @@ function toggleForms() {
 }
 </script>
 </body>
+</html>
