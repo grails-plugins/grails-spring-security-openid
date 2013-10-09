@@ -27,8 +27,8 @@ import org.springframework.security.openid.OpenIDAuthenticationProvider
 
 class SpringSecurityOpenidGrailsPlugin {
 
-	String version = '1.0.4'
-	String grailsVersion = '1.3.3 > *'
+	String version = '2.0-RC1'
+	String grailsVersion = '2.0 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'grails-app/domain/**',
@@ -38,10 +38,10 @@ class SpringSecurityOpenidGrailsPlugin {
 	]
 
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
+	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'OpenID authentication support for the Spring Security plugin.'
 	String description = 'OpenID authentication support for the Spring Security plugin.'
-	String documentation = 'http://grails-plugins.github.com/grails-spring-security-openid'
+	String documentation = 'http://grails-plugins.github.io/grails-spring-security-openid/'
 
 	String license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
