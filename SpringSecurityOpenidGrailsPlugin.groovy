@@ -1,4 +1,4 @@
-/* Copyright 2006-2012 SpringSource.
+/* Copyright 2006-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,25 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.codehaus.groovy.grails.plugins.springsecurity.NullLogoutHandlerRememberMeServices
-import org.codehaus.groovy.grails.plugins.springsecurity.SecurityFilterPosition
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdAuthenticationFailureHandler
-import org.codehaus.groovy.grails.plugins.springsecurity.openid.OpenIdUserDetailsService
+import grails.plugin.springsecurity.SecurityFilterPosition
+import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.openid.OpenIdAuthenticationFailureHandler
+import grails.plugin.springsecurity.openid.userdetails.OpenIdUserDetailsService
+import grails.plugin.springsecurity.web.authentication.NullLogoutHandlerRememberMeServices
 
-import org.openid4java.consumer.InMemoryConsumerAssociationStore
-import org.openid4java.consumer.InMemoryNonceVerifier
 import org.openid4java.consumer.ConsumerManager
-
-import org.springframework.security.openid.OpenIDAttribute
-import org.springframework.security.openid.OpenIDAuthenticationProvider
+import org.openid4java.consumer.InMemoryNonceVerifier
 import org.springframework.security.openid.OpenID4JavaConsumer
+import org.springframework.security.openid.OpenIDAttribute
 import org.springframework.security.openid.OpenIDAuthenticationFilter
+import org.springframework.security.openid.OpenIDAuthenticationProvider
 
 class SpringSecurityOpenidGrailsPlugin {
 
-	String version = '1.0.4'
-	String grailsVersion = '1.3.3 > *'
+	String version = '2.0-RC1'
+	String grailsVersion = '2.0 > *'
 	List loadAfter = ['springSecurityCore']
 	List pluginExcludes = [
 		'grails-app/domain/**',
@@ -40,10 +38,10 @@ class SpringSecurityOpenidGrailsPlugin {
 	]
 
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
+	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'OpenID authentication support for the Spring Security plugin.'
 	String description = 'OpenID authentication support for the Spring Security plugin.'
-	String documentation = 'http://grails-plugins.github.com/grails-spring-security-openid'
+	String documentation = 'http://grails-plugins.github.io/grails-spring-security-openid/'
 
 	String license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
@@ -65,7 +63,11 @@ class SpringSecurityOpenidGrailsPlugin {
 			return
 		}
 
-		println '\nConfiguring Spring Security OpenID ...'
+		boolean printStatusMessages = (conf.printStatusMessages instanceof Boolean) ? conf.printStatusMessages : true
+
+		if (printStatusMessages) {
+			println '\nConfiguring Spring Security OpenID ...'
+		}
 
 		SpringSecurityUtils.registerProvider 'openIDAuthProvider'
 		SpringSecurityUtils.registerFilter 'openIDAuthenticationFilter',
@@ -124,7 +126,9 @@ class SpringSecurityOpenidGrailsPlugin {
 			rememberMeServices(NullLogoutHandlerRememberMeServices)
 		}
 
-		println '... finished configuring Spring Security OpenID\n'
+		if (printStatusMessages) {
+			println '... finished configuring Spring Security OpenID\n'
+		}
 	}
 
 	def doWithApplicationContext = { ctx ->
@@ -140,7 +144,7 @@ class SpringSecurityOpenidGrailsPlugin {
 			println """
 ERROR: Your configuration specifies
 
-   grails.plugins.springsecurity.openid.userLookup.openIdsPropertyName='${openIdsPropertyName}'
+   grails.plugin.springsecurity.openid.userLookup.openIdsPropertyName='${openIdsPropertyName}'
 
 for $conf.userLookup.userDomainClassName but there's no property with that name in your user class;
 either add a hasMany for the OpenID strings:

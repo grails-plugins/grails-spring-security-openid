@@ -1,4 +1,4 @@
-/* Copyright 2006-2013 SpringSource.
+/* Copyright 2011-2013 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,30 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test
+package grails.plugin.springsecurity.openid
+
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 
 /**
+ * For testing only.
+ *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-class TestUser {
+class FakeApplication extends DefaultGrailsApplication {
 
-	static transients = ['roles', 'roleNames']
+	final config = new ConfigObject()
 
-	String username
-	String password
-	boolean enabled
-	boolean accountExpired
-	boolean accountLocked
-	boolean passwordExpired
+	FakeApplication() {}
 
-	static hasMany = [openIds: TestOpenID]
-
-	Set<TestRole> getAuthorities() {
-		TestUserRole.findAllByUser(this).collect { it.role } as Set
+	@SuppressWarnings("rawtypes")
+	FakeApplication(Class[] classes, ClassLoader classLoader) {
+		super(classes, classLoader)
 	}
 
-	static constraints = {
-		username blank: false, unique: true
-		password blank: false
-	}
+	@Override
+	ConfigObject getConfig() { this.config }
 }

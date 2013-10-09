@@ -1,0 +1,182 @@
+In this tutorial we'll cover
+* creating a sample application
+* installing the plugin
+* configuring the plugin
+* using the account linking workflow
+* using the registration workflow
+
+First, create a new application:
+
+bc.
+$ grails create-app openidtest
+$ cd openidtest
+
+Install the OpenID plugin by adding a dependency in BuildConfig.groovy:
+
+{code}
+plugins {
+   ...
+   runtime ':spring-security-openid:2.0-RC1'
+}
+{code}
+
+This will also install the Spring Security Core plugin since it's a dependency of this one.
+
+Run the @s2-quickstart script@ to initialize the core plugin:
+bc.
+$ grails s2-quickstart com.openidtest User Role
+
+To support the remember-me checkbox, run the @s2-create-persistent-token@ script to generate a domain class for persistent tokens:
+
+bc.
+$ grails s2-create-persistent-token com.openidtest.PersistentLogin
+
+To support linking one or more OpenIDs with local accounts, we need to create an @OpenID@ domain class:
+
+bc.
+$ grails s2-create-openid com.openidtest.OpenID
+
+and edit the generated user class and add a @hasMany@ for an @openIds@ property:
+
+{code}
+package com.openidtest
+
+class User {
+
+   transient springSecurityService
+
+   String username
+   String password
+   boolean enabled = true
+   boolean accountExpired
+   boolean accountLocked
+   boolean passwordExpired
+
+   static hasMany = [openIds: OpenID]
+
+   static transients = ['springSecurityService']
+
+   static constraints = {
+      username blank: false, unique: true
+      password blank: false
+   }
+
+   static mapping = {
+      password column: '`password`'
+   }
+
+   Set<Role> getAuthorities() {
+      UserRole.findAllByUser(this).collect { it.role } as Set
+   }
+
+   def beforeInsert() {
+      encodePassword()
+   }
+
+   def beforeUpdate() {
+      if (isDirty('password')) {
+         encodePassword()
+      }
+   }
+
+   protected void encodePassword() {
+      password = springSecurityService.encodePassword(password)
+   }
+}
+{code}
+
+Now create some test users and grant them some roles in @grails-app/conf/BootStrap.groovy@:
+
+{code}
+import com.openidtest.Role
+import com.openidtest.User
+import com.openidtest.UserRole
+
+class BootStrap {
+
+   def init = { servletContext ->
+      def roleAdmin = new Role(authority: 'ROLE_ADMIN').save()
+      def roleUser = new Role(authority: 'ROLE_USER').save()
+
+      def user = new User(username: 'user', password: 'password', enabled: true).save()
+      def admin = new User(username: 'admin', password: 'password', enabled: true).save()
+
+      UserRole.create user, roleUser
+      UserRole.create admin, roleUser
+      UserRole.create admin, roleAdmin, true
+   }
+}
+{code}
+
+The plugin contains an @OpenIdController@ but it'll be more natural to access its @createAccount@ action under /login/ and we also want to use this controller's @auth@ action instead of the core plugin's @LoginController.auth@ since this one supports both OpenID and regular username/password logins, so add mappings in @grails-app/conf/UrlMappings.groovy@ to support these changes:
+
+{code}
+class UrlMappings {
+
+   static mappings = {
+
+      "/login/auth" {
+         controller = 'openId'
+         action = 'auth'
+      }
+      "/login/openIdCreateAccount" {
+         controller = 'openId'
+         action = 'createAccount'
+      }
+
+      ...
+
+   }
+}
+{code}
+
+Now create a controller that's secured with annotations for testing:
+
+bc.
+$ grails create-controller secure
+
+and add this code:
+
+{code}
+package openidtest
+
+import grails.plugin.springsecurity.annotation.Secured
+
+class SecureController {
+
+   @Secured(['ROLE_ADMIN'])
+   def admins() {
+      render 'Logged in with ROLE_ADMIN'
+   }
+
+   @Secured(['ROLE_USER'])
+   def users() {
+      render 'Logged in with ROLE_USER'
+   }
+}
+{code}
+
+and finally we're ready to run the app:
+
+bc.
+$ grails run-app
+
+Navigate to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins] and you should be prompted with the login screen. Leave the Use OpenID checkbox checked and enter a valid OpenID. Don't check the remember-me checkbox yet (it doesn't work with the extended workflows where you create a new user or link an OpenID) and click the "Log in" button.
+
+After authenticating at the OpenID provider, you'll be redirected to the registration page. Note that there's a link to just associate the current OpenID with a local account - for now click the "link this OpenID" link.
+
+At the next screen enter the username and password for the user we created in BootStrap with ROLE_ADMIN ('admin'/'password') and you will be redirected to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]
+
+To test that the OpenID is linked to your account, logout by navigating to [http://localhost:8080/openidtest/logout/|http://localhost:8080/openidtest/logout/] and navigate to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]. Logging out removes the remember-me cookie, so authenticate again with your OpenID (this time check the remember-me checkbox) and it should skip the register/link step and go directly to the secured page. You can also repeat the process and switch to the username/password login and use that.
+
+To test remember-me, close the browser and re-open it, and navigate to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]. It should skip the authentication step entirely and show the page.
+
+h4. User Registration
+
+Now let's create a new user associated with an OpenID. Logout again and navigate to [http://localhost:8080/openidtest/secure/users|http://localhost:8080/openidtest/secure/users] to initiate a login for a resource that requires ROLE_USER.
+
+Since you've already associated the previous OpenID with a user, you either need to use a second OpenID, or restart the application to clear out the in-memory database.
+
+Login using either the new OpenID or the original after restarting, and after authenticating externally you'll be redirected to the registration page. This time create a new user. By default the password validation rules are rather strict and you can change them, but for now enter a password that's at least 8 characters and contains at least one number and at least one symbol (e.g. !, #, $, %, etc.)
+
+You should be redirected to [http://localhost:8080/openidtest/secure/users|http://localhost:8080/openidtest/secure/users] after creating the account. Now logout and log back in, both with the username/password for the account you created and the OpenID you linked and both should work.

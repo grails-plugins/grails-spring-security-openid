@@ -1,0 +1,10 @@
+introduction:
+  title: Introduction to the Spring Security OpenID Plugin
+  history: History
+usage: Usage
+tutorials:
+  title: Tutorials
+  userRegAndLink: User registration and linking
+  plainOpenid: Plain OpenID
+configuration: Configuration
+attributeExchange: Attribute Exchange

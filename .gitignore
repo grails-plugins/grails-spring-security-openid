@@ -1,7 +1,8 @@
-cobertura.ser
 *.log
 /target
-/plugin.xml
-*.zip
-/testapps.config.groovy
-/.settings/
+grails-spring-security-openid-*.zip
+grails-spring-security-openid-*.zip.sha1
+testapps.config.groovy
+plugin.xml
+.settings
+web-app
