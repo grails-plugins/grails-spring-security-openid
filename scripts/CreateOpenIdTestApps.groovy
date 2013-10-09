@@ -21,13 +21,12 @@
 
 includeTargets << new File("$springSecurityOpenidPluginDir/scripts/_OpenIdCommon.groovy")
 
-appName = null
 grailsHome = null
 dotGrails = null
 grailsVersion = null
 projectDir = null
+appName = null
 pluginVersion = null
-pluginZip = null
 testprojectRoot = null
 deleteAll = false
 
@@ -55,7 +54,7 @@ private void init(String name, config) {
 		error "pluginVersion wasn't specified for config '$name'"
 	}
 
-	pluginZip = new File(basedir, "grails-spring-security-openid-${pluginVersion}.zip")
+	def pluginZip = new File(basedir, "grails-spring-security-openid-${pluginVersion}.zip")
 	if (!pluginZip.exists()) {
 		error "plugin $pluginZip.absolutePath not found"
 	}
@@ -91,30 +90,39 @@ private void installPlugins() {
 	contents = contents.replace('grails.project.test.class.dir = "target/test-classes"', '')
 	contents = contents.replace('grails.project.test.reports.dir = "target/test-reports"', '')
 
+	contents = contents.replace('//mavenLocal()', 'mavenLocal()')
+	contents = contents.replace('repositories {', '''repositories {
+mavenRepo 'http://repo.spring.io/milestone' // TODO remove
+''')
+
+	contents = contents.replace('grails.project.fork', 'grails.project.forkDISABLED')
+
+	contents = contents.replace('plugins {', """plugins {
+runtime ":spring-security-openid:$pluginVersion"
+""")
+
 	buildConfig.withWriter { it.writeLine contents }
 
-	File config = new File(testprojectRoot, 'grails-app/conf/Config.groovy')
-	contents = buildConfig.text
-	contents += '''
-grails.plugins.springsecurity.openid.encodePassword = true
-'''
-	config.withWriter { it.writeLine contents }
-
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin', ['spring-security-core', '1.2.7.3'])
-
-	callGrails(grailsHome, testprojectRoot, 'dev', 'install-plugin', [pluginZip.absolutePath])
-
-	callGrails(grailsHome, testprojectRoot, 'dev', 'compile')
+	callGrails grailsHome, testprojectRoot, 'dev', 'compile', null, true // can fail when installing the functional-test plugin
+	callGrails grailsHome, testprojectRoot, 'dev', 'compile'
 }
 
 private void runQuickstart() {
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-quickstart', ['com.testopenid', 'User', 'Role'])
 
-	callGrails grailsHome, testprojectRoot, 'dev', 's2-init-openid'
-
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-persistent-token', ['com.testopenid.PersistentLogin'])
 
 	callGrails(grailsHome, testprojectRoot, 'dev', 's2-create-openid', ['com.testopenid.OpenID'])
+
+	File config = new File(testprojectRoot, 'grails-app/conf/Config.groovy')
+	contents = config.text
+
+	contents += '''
+grails.plugin.springsecurity.fii.rejectPublicInvocations = true
+grails.plugin.springsecurity.rejectIfNoRule = false
+'''
+
+	config.withWriter { it.writeLine contents }
 }
 
 private void createProjectFiles() {
@@ -129,8 +137,9 @@ private void createProjectFiles() {
 	ant.copy file: "$source/UrlMappings.groovy",
 	         todir: "$testprojectRoot/grails-app/conf", overwrite: true
 
-	ant.copy file: "$source/User.groovy",
-	         todir: "$testprojectRoot/grails-app/domain/com/testopenid", overwrite: true
+	File user = new File(testprojectRoot, 'grails-app/domain/com/testopenid/User.groovy')
+	String contents = user.text.replace('boolean passwordExpired', 'boolean passwordExpired\n\tstatic hasMany = [openIds: OpenID]')
+	user.withWriter { it.writeLine contents }
 }
 
 private void deleteDir(String path) {
@@ -155,7 +164,7 @@ private void error(String message) {
 	exit 1
 }
 
-private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null) {
+private void callGrails(String grailsHome, String dir, String env, String action, List extraArgs = null, boolean ignoreFailure = false) {
 
 	String resultproperty = 'exitCode' + System.currentTimeMillis()
 	String outputproperty = 'execOutput' + System.currentTimeMillis()
@@ -168,12 +177,13 @@ private void callGrails(String grailsHome, String dir, String env, String action
 		ant.arg value: env
 		ant.arg value: action
 		extraArgs.each { ant.arg value: it }
+		ant.arg value: '--stacktrace'
 	}
 
 	println ant.project.getProperty(outputproperty)
 
 	int exitCode = ant.project.getProperty(resultproperty) as Integer
-	if (exitCode) {
+	if (exitCode && !ignoreFailure) {
 		exit exitCode
 	}
 }

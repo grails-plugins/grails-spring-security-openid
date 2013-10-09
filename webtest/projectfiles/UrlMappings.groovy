@@ -1,11 +1,7 @@
 class UrlMappings {
 
 	static mappings = {
-		"/$controller/$action?/$id?"{
-			constraints {
-				// apply constraints here
-			}
-		}
+		"/$controller/$action?/$id?"{}
 
 		"/login/auth" {
 			controller = 'openId'
