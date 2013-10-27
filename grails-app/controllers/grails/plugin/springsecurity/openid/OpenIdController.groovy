@@ -263,6 +263,9 @@ class OpenIdRegisterCommand {
 
 	static constraints = {
 		username blank: false, validator: { String username, command ->
+
+			def User = grailsApplication.getClassForName(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName)
+
 			User.withNewSession { session ->
 				if (username) {
 					boolean exists = User.createCriteria().count {
