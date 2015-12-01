@@ -42,10 +42,6 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	private response = new MockHttpServletResponse()
 	private request = new MockHttpServletRequest()
 
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	protected void setUp() {
 		super.setUp()
@@ -106,10 +102,6 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 		assertEquals 'foo@bar.com', attributes[0].values[0]
 	}
 
-	/**
-	 * {@inheritDoc}
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	protected void tearDown() {
 		super.tearDown()

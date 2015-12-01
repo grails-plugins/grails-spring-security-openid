@@ -43,12 +43,6 @@ public class OpenIdAuthenticationFailureHandler extends AjaxAwareAuthenticationF
 	/** Session key for the attributes that were returned. */
 	public static final String LAST_OPENID_ATTRIBUTES = "LAST_OPENID_ATTRIBUTES";
 
-	/**
-	 * {@inheritDoc}
-	 * @see org.springframework.security.web.authentication.ExceptionMappingAuthenticationFailureHandler#onAuthenticationFailure(
-	 * 	javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse,
-	 * 	org.springframework.security.core.AuthenticationException)
-	 */
 	@Override
 	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
 			final AuthenticationException exception) throws IOException, ServletException {

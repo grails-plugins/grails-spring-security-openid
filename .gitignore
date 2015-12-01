@@ -5,5 +5,7 @@ grails-spring-security-openid-*.zip
 grails-spring-security-openid-*.zip.sha1
 testapps.config.groovy
 plugin.xml
+.classpath
+.project
 .settings
 web-app
