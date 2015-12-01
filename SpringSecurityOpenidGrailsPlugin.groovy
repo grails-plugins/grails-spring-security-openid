@@ -1,4 +1,4 @@
-/* Copyright 2006-2013 SpringSource.
+/* Copyright 2006-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class SpringSecurityOpenidGrailsPlugin {
 	String documentation = 'http://grails-plugins.github.io/grails-spring-security-openid/'
 
 	String license = 'APACHE'
-	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def organization = [name: 'Grails', url: 'http://www.grails.org/']
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPSPRINGSECURITYOPENID']
 	def scm = [url: 'https://github.com/grails-plugins/grails-spring-security-openid']
 
