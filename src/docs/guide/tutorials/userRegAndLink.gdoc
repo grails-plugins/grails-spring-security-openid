@@ -167,7 +167,12 @@ After authenticating at the OpenID provider, you'll be redirected to the registr
 
 At the next screen enter the username and password for the user we created in BootStrap with ROLE_ADMIN ('admin'/'password') and you will be redirected to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]
 
-To test that the OpenID is linked to your account, logout by navigating to [http://localhost:8080/openidtest/logout/|http://localhost:8080/openidtest/logout/] and navigate to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]. Logging out removes the remember-me cookie, so authenticate again with your OpenID (this time check the remember-me checkbox) and it should skip the register/link step and go directly to the secured page. You can also repeat the process and switch to the username/password login and use that.
+To test that the OpenID is linked to your account, logout by navigating to [http://localhost:8080/openidtest/logout/|http://localhost:8080/openidtest/logout/] and navigate to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]. Logging out removes the remember-me cookie, so authenticate again with your OpenID (this time check the remember-me checkbox) and it should skip the register/link step and go directly to the secured page. Note that it's necessary to configure spring security to permit GET requests to logout:
+{code}
+grails.plugin.springsecurity.logout.postOnly = false
+{code}
+
+You can also repeat the process and switch to the username/password login and use that.
 
 To test remember-me, close the browser and re-open it, and navigate to [http://localhost:8080/openidtest/secure/admins|http://localhost:8080/openidtest/secure/admins]. It should skip the authentication step entirely and show the page.
 

@@ -46,7 +46,7 @@ class OpenIdController implements InitializingBean {
 	private Class User
 	private Class UserRole
 	private Class Role
-	private String usernamePropName
+	private String usernamePropertyName
 	private String passwordPropertyName
 	private String enabledPropertyName
 	private String roleNameField
@@ -221,7 +221,7 @@ class OpenIdController implements InitializingBean {
 		daoAuthenticationProvider.authenticate new UsernamePasswordAuthenticationToken(username, password)
 
 		User.withTransaction { status ->
-			def user = User.findWhere((usernamePropName): username)
+			def user = User.findWhere((usernamePropertyName): username)
 			user.addToOpenIds(url: openId)
 			if (!user.validate()) {
 				status.setRollbackOnly()
@@ -246,12 +246,13 @@ class OpenIdController implements InitializingBean {
 
 	void afterPropertiesSet() throws Exception {
 		def conf = SpringSecurityUtils.securityConfig
-		usernamePropName = conf.userLookup.usernamePropertyName
+        usernamePropertyName = conf.userLookup.usernamePropertyName
 		passwordPropertyName = conf.userLookup.passwordPropertyName
 		enabledPropertyName = conf.userLookup.enabledPropertyName
 		roleNameField = conf.authority.nameField
 		User = grailsApplication.getClassForName(conf.userLookup.userDomainClassName)
 		UserRole = grailsApplication.getClassForName(conf.userLookup.authorityJoinClassName)
+        Role = grailsApplication.getClassForName(conf.authority.className)
 	}
 }
 
@@ -264,12 +265,12 @@ class OpenIdRegisterCommand {
 	static constraints = {
 		username blank: false, validator: { String username, command ->
 
-			def User = grailsApplication.getClassForName(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName)
+			def User = grails.util.Holders.getGrailsApplication().getClassForName(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName)
 
 			User.withNewSession { session ->
 				if (username) {
 					boolean exists = User.createCriteria().count {
-						eq usernamePropName, username
+						eq SpringSecurityUtils.securityConfig.userLookup.usernamePropertyName, username
 					}
 					if (exists) {
 						return 'openIdRegisterCommand.username.error.unique'
@@ -283,9 +284,9 @@ class OpenIdRegisterCommand {
 			}
 
 			if (password && password.length() >= 8 && password.length() <= 64 &&
-					(!password.matches('^.*\\\\p{Alpha}.*$') ||
-					!password.matches('^.*\\\\p{Digit}.*$') ||
-					!password.matches('^.*[!@#$%^&].*$'))) {
+					(!password.matches('^.*\\p{Alpha}.*$') ||
+					!password.matches('^.*\\p{Digit}.*$') ||
+					!password.matches('^.*[!@#$%^&*].*$'))) {
 				return 'openIdRegisterCommand.password.error.strength'
 			}
 		}
