@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta name='layout' content='main'/>
+<meta name="layout" content="${gspLayout ?: 'main'}"/>
 <title>Link Account</title>
 </head>
 

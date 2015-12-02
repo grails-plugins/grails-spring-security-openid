@@ -24,6 +24,12 @@ security {
 
 		encodePassword = false
 
+		gsp {
+			layoutAuth = 'main'
+			layoutCreateAccount = 'main'
+			layoutLinkAccount = 'main'
+		}
+
 		nonceMaxSeconds = 300
 
 		registration {

@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta name="layout" content="${gspLayout ?: 'main'}"/>
 <title>Login</title>
 <style type='text/css' media='screen'>
 body {

@@ -71,6 +71,7 @@ class OpenIdController implements InitializingBean {
 		}
 
 		[daoPostUrl:           "$request.contextPath$config.apf.filterProcessesUrl",
+		 gspLayout:            config.openid.gsp.layoutAuth,
 		 openidIdentifier:     config.openid.claimedIdentityFieldName,
 		 openIdPostUrl:        "$request.contextPath$openIDAuthenticationFilter.filterProcessesUrl",
 		 persistentRememberMe: config.rememberMe.persistent,
@@ -91,22 +92,26 @@ class OpenIdController implements InitializingBean {
 		String openId = session[OpenIdAuthenticationFailureHandler.LAST_OPENID_USERNAME]
 		if (!openId) {
 			flash.error = 'Sorry, an OpenID was not found'
-			return [command: command]
+			renderCreateAccount command, null
+			return
 		}
 
 		if (!request.post) {
 			// show the form
 			command.clearErrors()
 			copyFromAttributeExchange command
-			return [command: command, openId: openId]
+			renderCreateAccount command, openId
+			return
 		}
 
 		if (command.hasErrors()) {
-			return [command: command, openId: openId]
+			renderCreateAccount command, openId
+			return
 		}
 
 		if (!createNewAccount(command.username, command.password, openId)) {
-			return [command: command, openId: openId]
+			renderCreateAccount command, openId
+			return
 		}
 
 		authenticateAndRedirect command.username
@@ -121,17 +126,20 @@ class OpenIdController implements InitializingBean {
 		String openId = session[OpenIdAuthenticationFailureHandler.LAST_OPENID_USERNAME]
 		if (!openId) {
 			flash.error = 'Sorry, an OpenID was not found'
-			return [command: command]
+			renderLinkAccount command, null
+			return
 		}
 
 		if (!request.post) {
 			// show the form
 			command.clearErrors()
-			return [command: command, openId: openId]
+			renderLinkAccount command, openId
+			return
 		}
 
 		if (command.hasErrors()) {
-			return [command: command, openId: openId]
+			renderLinkAccount command, openId
+			return
 		}
 
 		try {
@@ -139,7 +147,8 @@ class OpenIdController implements InitializingBean {
 		}
 		catch (AuthenticationException e) {
 			flash.error = 'Sorry, no user was found with that username and password'
-			return [command: command, openId: openId]
+			renderLinkAccount command, openId
+			return
 		}
 
 		authenticateAndRedirect command.username
@@ -240,6 +249,18 @@ class OpenIdController implements InitializingBean {
 				command."$name" = attribute.values[0]
 			}
 		}
+	}
+
+	protected void renderCreateAccount(OpenIdRegisterCommand command, String openId) {
+		doRender 'createAccount', 'layoutCreateAccount', command, openId
+	}
+
+	protected void renderLinkAccount(OpenIdLinkAccountCommand command, String openId) {
+		doRender 'linkAccount', 'layoutLinkAccount', command, openId
+	}
+
+	protected void doRender(String view, String confKey, command, String openId = null) {
+		render view: view, model: [command: command, openId: openId, gspLayout: conf.openid.gsp[confKey]]
 	}
 
 	protected getConf() {
