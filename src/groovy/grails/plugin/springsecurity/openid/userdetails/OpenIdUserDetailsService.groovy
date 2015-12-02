@@ -16,6 +16,7 @@ package grails.plugin.springsecurity.openid.userdetails
 
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugin.springsecurity.userdetails.GormUserDetailsService
+import grails.plugin.springsecurity.userdetails.NoStackUsernameNotFoundException
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -54,7 +55,7 @@ class OpenIdUserDetailsService extends GormUserDetailsService {
 
 			if (!user) {
 				log.warn 'User not found: {}', username
-				throw new UsernameNotFoundException('User not found', username)
+				throw new NoStackUsernameNotFoundException()
 			}
 
 			Collection<GrantedAuthority> authorities = loadAuthorities(user, username, loadRoles)
