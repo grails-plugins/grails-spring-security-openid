@@ -19,8 +19,6 @@ package test
  */
 class TestUser {
 
-	static transients = ['roles', 'roleNames']
-
 	String username
 	String password
 	boolean enabled
@@ -31,7 +29,7 @@ class TestUser {
 	static hasMany = [openIds: TestOpenID]
 
 	Set<TestRole> getAuthorities() {
-		TestUserRole.findAllByUser(this).collect { it.role } as Set
+		TestUserRole.findAllByUser(this)*.testRole
 	}
 
 	static constraints = {

@@ -19,7 +19,10 @@ import grails.plugin.springsecurity.annotation.Secured
 
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.AuthenticationException
+import org.springframework.security.openid.OpenIDAuthenticationFilter
+import org.springframework.security.web.savedrequest.RequestCache
 
 /**
  * Manages associating OpenIDs with application users, both by creating a new local user
@@ -29,16 +32,13 @@ import org.springframework.security.core.AuthenticationException
 class OpenIdController implements InitializingBean {
 
 	/** Dependency injection for daoAuthenticationProvider. */
-	def daoAuthenticationProvider
-
-	/** Dependency injection for the grailsApplication. */
-	def grailsApplication
+	DaoAuthenticationProvider daoAuthenticationProvider
 
 	/** Dependency injection for OpenIDAuthenticationFilter. */
-	def openIDAuthenticationFilter
+	OpenIDAuthenticationFilter openIDAuthenticationFilter
 
 	/** Dependency injection for the requestCache. */
-	def requestCache
+	RequestCache requestCache
 
 	/** Dependency injection for the springSecurityService. */
 	def springSecurityService
@@ -63,18 +63,18 @@ class OpenIdController implements InitializingBean {
 	 */
 	def auth() {
 
-		def config = SpringSecurityUtils.securityConfig
+		def config = conf
 
 		if (springSecurityService.isLoggedIn()) {
 			redirect uri: config.successHandler.defaultTargetUrl
 			return
 		}
 
-		[openIdPostUrl: "$request.contextPath$openIDAuthenticationFilter.filterProcessesUrl",
-		 daoPostUrl:    "$request.contextPath$config.apf.filterProcessesUrl",
+		[daoPostUrl:           "$request.contextPath$config.apf.filterProcessesUrl",
+		 openidIdentifier:     config.openid.claimedIdentityFieldName,
+		 openIdPostUrl:        "$request.contextPath$openIDAuthenticationFilter.filterProcessesUrl",
 		 persistentRememberMe: config.rememberMe.persistent,
-		 rememberMeParameter: config.rememberMe.parameter,
-		 openidIdentifier: config.openid.claimedIdentityFieldName]
+		 rememberMeParameter:  config.rememberMe.parameter]
 	}
 
 	/**
@@ -157,7 +157,7 @@ class OpenIdController implements InitializingBean {
 
 		springSecurityService.reauthenticate username
 
-		def config = SpringSecurityUtils.securityConfig
+		def config = conf
 		def savedRequest = requestCache.getRequest(request, response)
 		if (savedRequest && !config.successHandler.alwaysUseDefault) {
 			redirect url: savedRequest.redirectUrl
@@ -177,7 +177,6 @@ class OpenIdController implements InitializingBean {
 	 */
 	protected boolean createNewAccount(String username, String password, String openId) {
 		boolean created = User.withTransaction { status ->
-			def config = SpringSecurityUtils.securityConfig
 
 			password = encodePassword(password)
 			def user = User.newInstance((usernamePropertyName): username,
@@ -190,7 +189,7 @@ class OpenIdController implements InitializingBean {
 				return false
 			}
 
-			for (roleName in config.openid.registration.roleNames) {
+			for (roleName in conf.openid.registration.roleNames) {
 				UserRole.create user, Role.findWhere((roleNameField): roleName)
 			}
 			return true
@@ -199,8 +198,7 @@ class OpenIdController implements InitializingBean {
 	}
 
 	protected String encodePassword(String password) {
-		def config = SpringSecurityUtils.securityConfig
-		def encode = config.openid.encodePassword
+		def encode = conf.openid.encodePassword
 		if (!(encode instanceof Boolean)) encode = false
 		if (encode) {
 			password = springSecurityService.encodePassword(password)
@@ -244,40 +242,52 @@ class OpenIdController implements InitializingBean {
 		}
 	}
 
-	void afterPropertiesSet() throws Exception {
-		def conf = SpringSecurityUtils.securityConfig
-        usernamePropertyName = conf.userLookup.usernamePropertyName
-		passwordPropertyName = conf.userLookup.passwordPropertyName
-		enabledPropertyName = conf.userLookup.enabledPropertyName
-		roleNameField = conf.authority.nameField
-		User = grailsApplication.getClassForName(conf.userLookup.userDomainClassName)
-		UserRole = grailsApplication.getClassForName(conf.userLookup.authorityJoinClassName)
-        Role = grailsApplication.getClassForName(conf.authority.className)
+	protected getConf() {
+		SpringSecurityUtils.securityConfig
+	}
+
+	void afterPropertiesSet() {
+		def config = conf
+		usernamePropertyName = config.userLookup.usernamePropertyName
+		passwordPropertyName = config.userLookup.passwordPropertyName
+		enabledPropertyName = config.userLookup.enabledPropertyName
+		roleNameField = config.authority.nameField
+		User = grailsApplication.getClassForName(config.userLookup.userDomainClassName)
+		UserRole = grailsApplication.getClassForName(config.userLookup.authorityJoinClassName)
+		Role = grailsApplication.getClassForName(config.authority.className)
+
+		OpenIdRegisterCommand.User = User
+		OpenIdRegisterCommand.usernamePropertyName = usernamePropertyName
 	}
 }
 
 class OpenIdRegisterCommand {
 
-	String username = ""
-	String password = ""
-	String password2 = ""
+	static Class User
+	static String usernamePropertyName
+
+	String username = ''
+	String password = ''
+	String password2 = ''
 
 	static constraints = {
+
 		username blank: false, validator: { String username, command ->
 
-			def User = grails.util.Holders.getGrailsApplication().getClassForName(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName)
-
 			User.withNewSession { session ->
-				if (username) {
-					boolean exists = User.createCriteria().count {
-						eq SpringSecurityUtils.securityConfig.userLookup.usernamePropertyName, username
-					}
-					if (exists) {
-						return 'openIdRegisterCommand.username.error.unique'
-					}
+				if (!username) {
+					return
+				}
+
+				boolean exists = User.createCriteria().count {
+					eq usernamePropertyName, username
+				}
+				if (exists) {
+					return 'openIdRegisterCommand.username.error.unique'
 				}
 			}
 		}
+
 		password blank: false, minSize: 8, maxSize: 64, validator: { password, command ->
 			if (command.username && command.username.equals(password)) {
 				return 'openIdRegisterCommand.password.error.username'
@@ -290,6 +300,7 @@ class OpenIdRegisterCommand {
 				return 'openIdRegisterCommand.password.error.strength'
 			}
 		}
+
 		password2 validator: { password2, command ->
 			if (command.password != password2) {
 				return 'openIdRegisterCommand.password2.error.mismatch'
@@ -300,8 +311,8 @@ class OpenIdRegisterCommand {
 
 class OpenIdLinkAccountCommand {
 
-	String username = ""
-	String password = ""
+	String username = ''
+	String password = ''
 
 	static constraints = {
 		username blank: false

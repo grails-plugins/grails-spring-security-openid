@@ -20,22 +20,22 @@ security {
 
 		claimedIdentityFieldName = 'openid_identifier'
 
-		nonceMaxSeconds = 300
-
 		domainClass = null // must be set
+
+		encodePassword = false
+
+		nonceMaxSeconds = 300
 
 		registration {
 			autocreate = true
-			requiredAttributes = [:]
-			optionalAttributes = [email: 'http://schema.openid.net/contact/email']
 			createAccountUri = '/login/openIdCreateAccount'
+			optionalAttributes = [email: 'http://schema.openid.net/contact/email']
+			requiredAttributes = [:]
 			roleNames = ['ROLE_USER']
 		}
 
 		userLookup {
 			openIdsPropertyName = 'openIds'
 		}
-
-		encodePassword = false
 	}
 }

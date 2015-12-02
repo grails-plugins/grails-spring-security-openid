@@ -16,7 +16,7 @@ package grails.plugin.springsecurity.openid
 
 import grails.plugin.springsecurity.ReflectionUtils
 import grails.plugin.springsecurity.SpringSecurityUtils
-import grails.plugin.springsecurity.web.SecurityRequestHolder;
+import grails.plugin.springsecurity.web.SecurityRequestHolder
 
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
@@ -69,7 +69,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 
 	void testOnAuthenticationFailure_NotOpenIdSuccess() {
 		def e = new UsernameNotFoundException('expired')
-		e.authentication = new OpenIDAuthenticationToken(OpenIDAuthenticationStatus.FAILURE, "", "", [])
+		e.authentication = new OpenIDAuthenticationToken(OpenIDAuthenticationStatus.FAILURE, '', '', [])
 
 		handler.onAuthenticationFailure request, response, e
 
@@ -79,7 +79,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	void testOnAuthenticationFailure_OpenIdSuccess_NotAutocreate() {
 		ReflectionUtils.setConfigProperty 'openid.registration.autocreate', false
 		def e = new UsernameNotFoundException('expired')
-		e.authentication = new OpenIDAuthenticationToken(OpenIDAuthenticationStatus.SUCCESS, "", "", [])
+		e.authentication = new OpenIDAuthenticationToken(OpenIDAuthenticationStatus.SUCCESS, '', '', [])
 
 		handler.onAuthenticationFailure request, response, e
 
@@ -105,7 +105,7 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	@Override
 	protected void tearDown() {
 		super.tearDown()
-		SCH.context.authentication = null
+		SCH.clearContext()
 		ReflectionUtils.application = null
 		SpringSecurityUtils.resetSecurityConfig()
 	}

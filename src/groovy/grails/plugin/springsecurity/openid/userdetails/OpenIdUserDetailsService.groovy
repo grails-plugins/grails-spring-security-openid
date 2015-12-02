@@ -53,12 +53,12 @@ class OpenIdUserDetailsService extends GormUserDetailsService {
 			}
 
 			if (!user) {
-				log.warn "User not found: $username"
+				log.warn 'User not found: {}', username
 				throw new UsernameNotFoundException('User not found', username)
 			}
 
 			Collection<GrantedAuthority> authorities = loadAuthorities(user, username, loadRoles)
-			createUserDetails(user, authorities)
+			createUserDetails user, authorities
 		}
 	}
 }
