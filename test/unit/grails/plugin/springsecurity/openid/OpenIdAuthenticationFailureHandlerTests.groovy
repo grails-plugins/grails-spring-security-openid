@@ -46,10 +46,12 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	protected void setUp() {
 		super.setUp()
 		SecurityRequestHolder.set request, response
-		ReflectionUtils.application = new FakeApplication()
-		ReflectionUtils.setConfigProperty 'openid.registration.autocreate', true
-		ReflectionUtils.setConfigProperty 'ajaxHeader', 'ajaxHeader'
-		ReflectionUtils.setConfigProperty 'openid.registration.createAccountUri', OPENID_REDIRECT
+
+		def config = SpringSecurityUtils.securityConfig = [:] as ConfigObject
+		config.openid.registration.autocreate = true
+		config.ajaxHeader = 'ajaxHeader'
+		config.openid.registration.createAccountUri = OPENID_REDIRECT
+
 		handler.defaultFailureUrl = STANDARD_REDIRECT
 		handler.ajaxAuthenticationFailureUrl = AJAX_REDIRECT
 	}
@@ -106,7 +108,6 @@ class OpenIdAuthenticationFailureHandlerTests extends GroovyTestCase {
 	protected void tearDown() {
 		super.tearDown()
 		SCH.clearContext()
-		ReflectionUtils.application = null
 		SpringSecurityUtils.resetSecurityConfig()
 	}
 }
