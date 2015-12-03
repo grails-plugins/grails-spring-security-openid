@@ -5,12 +5,12 @@ h2. Purpose
 Creates a domain class to manage OpenID urls associated with a user. The general format is:
 
 bc.
-   grails grails s2-create-openid <domain-class-name>
+grails s2-create-openid <domain-class-name>
 
 h2. Example
 
 bc.
-grails grails s2-create-openid com.yourapp.OpenID
+grails s2-create-openid com.yourapp.OpenID
 
 h2. Description
 

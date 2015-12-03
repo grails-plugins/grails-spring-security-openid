@@ -4,7 +4,7 @@ When a user authenticates in Spring Security, an @Authentication@ is created and
 
 h4. Associating OpenIDs with local accounts
 
-This plugin has two features that address this issues. One is the ability to associate multiple OpenIDs with a user record. Recall that the Core plugin generates a user class that looks like this:
+This plugin has two features that address these issues. One is the ability to associate multiple OpenIDs with a user record. Recall that the Core plugin generates a user class that looks like this:
 
 {code}
 package com.yourcompany.yourapp
@@ -100,7 +100,7 @@ class User {
 }
 {code}
 
-Now when an existing user authenticates with OpenID, you can detect that there's no local database with that username and display a page where the user can associate that OpenID with an existing account. Subsequent authentication attempts will use the plugin's enhanced @UserDetailsService@ that looks for a user not just by username but also by OpenID, so OpenID authenticate attempts work fine, and form-based logins do too if they provide the correct password.
+Now when an existing user authenticates with OpenID, you can detect that there's no local database user with that username and display a page where the user can associate that OpenID with an existing account. Subsequent authentication attempts will use the plugin's enhanced @UserDetailsService@ that looks for a user not just by username but also by OpenID, so users can authenticate with OpenID or with form-based logins if they provide the correct password.
 
 h4. New accounts
 
