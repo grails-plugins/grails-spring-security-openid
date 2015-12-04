@@ -22,12 +22,9 @@ grails.project.dependency.resolution = {
 			         'spring-context', 'spring-core', 'spring-security-core', 'spring-security-web', 'spring-web'
 		}
 
-		compile 'org.openid4java:openid4java-nodeps:0.9.6', {
-			excludes 'axiom-api', 'commons-logging', 'ehcache', 'guice', 'higgins-configuration-api',
-			         'higgins-sts-api', 'higgins-sts-common', 'higgins-sts-server-token-handler',
-			         'higgins-sts-spi', 'jcip-annotations', 'jdom', 'jetty', 'jetty-util',
-			         'junit', 'jwebunit-htmlunit-plugin', 'log4j', 'nekohtml', 'openxri-client',
-			         'openxri-syntax', 'servlet-api', 'spring-jdbc', 'xercesImpl', 'xmlsec'
+		compile 'org.openid4java:openid4java:1.0.0', {
+			excludes 'commons-logging', 'ehcache', 'guice', 'hsqldb', 'httpclient', 'jdom', 'jetty', 'jetty-util', 'junit',
+			         'jwebunit-htmlunit-plugin', 'log4j', 'nekohtml', 'servlet-api', 'spring-jdbc', 'xercesImpl'
 		}
 
 		compile 'xerces:xercesImpl:2.11.0', {
