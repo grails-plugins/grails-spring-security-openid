@@ -134,7 +134,7 @@ class SpringSecurityOpenidGrailsPlugin {
 
 	def doWithApplicationContext = { ctx ->
 		def conf = SpringSecurityUtils.securityConfig
-		if (!conf || !conf.active) {
+		if (!conf || !conf.active || !conf.openid.active) {
 			return
 		}
 
