@@ -38,6 +38,7 @@ def createAccount() {
 You'll need to add these imports:
 
 {code}
+import grails.plugin.springsecurity.openid.OpenIdAuthenticationFailureHandler
 import grails.plugin.springsecurity.userdetails.GrailsUser
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder as SCH
