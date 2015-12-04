@@ -14,6 +14,7 @@
  */
 import grails.plugin.springsecurity.SecurityFilterPosition
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.openid.GrailsAxFetchListFactory
 import grails.plugin.springsecurity.openid.OpenIdAuthenticationFailureHandler
 import grails.plugin.springsecurity.openid.userdetails.OpenIdUserDetailsService
 import grails.plugin.springsecurity.web.authentication.NullLogoutHandlerRememberMeServices
@@ -92,9 +93,9 @@ class SpringSecurityOpenidGrailsPlugin {
 			attr.required = true
 			attrs << attr
 		}
-		openIDAttributes(ArrayList, attrs)
+		axFetchListFactory(GrailsAxFetchListFactory, attrs)
 
-		openIDConsumer(OpenID4JavaConsumer, openIDConsumerManager, openIDAttributes)
+		openIDConsumer(OpenID4JavaConsumer, openIDConsumerManager, axFetchListFactory)
 
 		openIDAuthenticationFilter(OpenIDAuthenticationFilter) {
 			claimedIdentityFieldName = conf.openid.claimedIdentityFieldName // openid_identifier
